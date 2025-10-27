@@ -1,7 +1,8 @@
 'use client';
 
 import type { Student } from '@/lib/types';
-import { useActionState, useFormStatus } from 'react';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { createStudent, updateStudent, type State } from '@/lib/actions';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
