@@ -3,7 +3,6 @@
 import { getStudentById } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Edit, Mail, Phone, MapPin, Trash2 } from 'lucide-react';
@@ -75,7 +74,6 @@ export default function StudentProfilePage({
         <div className="w-full max-w-4xl mx-auto">
             <Card>
                 <CardHeader className="flex flex-col items-center text-center space-y-4 p-6 sm:p-8">
-                     <div className="animate-pulse rounded-full bg-muted w-24 h-24 border-4 border-background shadow-md"></div>
                     <div>
                         <div className="animate-pulse h-8 w-48 bg-muted rounded-md"></div>
                          <div className="animate-pulse h-6 w-24 bg-muted rounded-md mt-2"></div>
@@ -120,12 +118,6 @@ export default function StudentProfilePage({
     <div className="w-full max-w-4xl mx-auto">
         <Card>
             <CardHeader className="flex flex-col items-center text-center space-y-4 p-6 sm:p-8">
-                <Avatar className="w-24 h-24 border-4 border-background shadow-md">
-                    <AvatarImage src={student.avatarUrl} alt={student.name} data-ai-hint="person portrait"/>
-                    <AvatarFallback className="text-3xl">
-                        {student.name.split(' ').map((n) => n[0]).join('')}
-                    </AvatarFallback>
-                </Avatar>
                 <div>
                     <CardTitle className="text-3xl font-bold font-headline">{student.name}</CardTitle>
                     <p className="text-muted-foreground mt-1">

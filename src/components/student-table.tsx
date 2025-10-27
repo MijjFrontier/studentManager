@@ -17,7 +17,6 @@ import { Button } from '@/components/ui/button';
 import { MoreVertical, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { deleteStudent } from '@/lib/actions';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Badge } from './ui/badge';
 
 function DeleteAction({ id }: { id: string }) {
@@ -58,7 +57,6 @@ export default async function StudentTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[80px]">Avatar</TableHead>
             <TableHead>Nombre</TableHead>
             <TableHead>ID de Estudiante</TableHead>
             <TableHead className="hidden md:table-cell">Correo Electrónico</TableHead>
@@ -68,17 +66,6 @@ export default async function StudentTable({
         <TableBody>
           {students.map((student) => (
             <TableRow key={student.id}>
-              <TableCell>
-                <Avatar>
-                  <AvatarImage src={student.avatarUrl} alt={student.name} data-ai-hint="person portrait" />
-                  <AvatarFallback>
-                    {student.name
-                      .split(' ')
-                      .map((n) => n[0])
-                      .join('')}
-                  </AvatarFallback>
-                </Avatar>
-              </TableCell>
               <TableCell className="font-medium">
                 <Link href={`/students/${student.id}`} className="hover:underline">
                   {student.name}

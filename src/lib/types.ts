@@ -5,5 +5,4 @@ export type Student = {
   email: string;
   phone: string;
   address: string;
-  avatarUrl: string;
 };

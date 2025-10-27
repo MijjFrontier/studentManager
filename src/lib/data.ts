@@ -1,6 +1,5 @@
 
 import type { Student } from './types';
-import { PlaceHolderImages } from './placeholder-images';
 
 // To persist data across hot reloads in development
 const globalForStudents = global as unknown as { students: Student[] | undefined };
@@ -63,7 +62,7 @@ export async function getStudentById(id: string) {
   return student;
 }
 
-export async function addStudent(studentData: Omit<Student, 'id' | 'studentId' | 'avatarUrl'>) {
+export async function addStudent(studentData: Omit<Student, 'id' | 'studentId'>) {
     await simulateLatency();
     
     if (!globalForStudents.students) {
@@ -72,19 +71,17 @@ export async function addStudent(studentData: Omit<Student, 'id' | 'studentId' |
 
     const newId = crypto.randomUUID();
     const newStudentId = `S${1000 + globalForStudents.students.length + 1}`;
-    const newAvatarIndex = (globalForStudents.students.length % PlaceHolderImages.length);
-
+    
     const newStudent: Student = {
         ...studentData,
         id: newId,
         studentId: newStudentId,
-        avatarUrl: PlaceHolderImages[newAvatarIndex]?.imageUrl || `https://picsum.photos/seed/${newId}/200/200`
     };
     globalForStudents.students.unshift(newStudent); // Add to the beginning of the array
     return newStudent;
 }
 
-export async function updateStudent(id: string, updates: Partial<Omit<Student, 'id' | 'studentId' | 'avatarUrl'>>) {
+export async function updateStudent(id: string, updates: Partial<Omit<Student, 'id' | 'studentId'>>) {
     await simulateLatency();
     
     if (!globalForStudents.students) {
