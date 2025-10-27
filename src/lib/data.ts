@@ -2,40 +2,11 @@
 import type { Student } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 
-// Using 'let' to allow modification by server actions
-// let students: Student[] = [];
-
-// // Generate 35 students for demonstration
-// if (students.length === 0) {
-//   for (let i = 1; i <= 35; i++) {
-//     students.push({
-//       id: crypto.randomUUID(),
-//       studentId: `S${1000 + i}`,
-//       name: `Student Name ${i}`,
-//       email: `student.name.${i}@example.com`,
-//       phone: `(555) 555-55${i.toString().padStart(2, '0')}`,
-//       address: `${i * 123} Main St, Anytown, USA 12345`,
-//       avatarUrl: PlaceHolderImages[i-1]?.imageUrl || `https://picsum.photos/seed/${i}/200/200`
-//     });
-//   }
-// }
-
 // To persist data across hot reloads in development
 const globalForStudents = global as unknown as { students: Student[] };
 
 if (!globalForStudents.students) {
     globalForStudents.students = [];
-    for (let i = 1; i <= 35; i++) {
-        globalForStudents.students.push({
-            id: crypto.randomUUID(),
-            studentId: `S${1000 + i}`,
-            name: `Student Name ${i}`,
-            email: `student.name.${i}@example.com`,
-            phone: `(555) 555-55${i.toString().padStart(2, '0')}`,
-            address: `${i * 123} Main St, Anytown, USA 12345`,
-            avatarUrl: PlaceHolderImages[i-1]?.imageUrl || `https://picsum.photos/seed/${i}/200/200`
-        });
-    }
 }
 
 
