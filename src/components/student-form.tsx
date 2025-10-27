@@ -74,7 +74,7 @@ export function StudentForm({ student }: { student?: Student | null }) {
             <Input
               id="phone"
               name="phone"
-              placeholder="p. ej. (555) 555-5555"
+              placeholder="p. ej. 987654321"
               defaultValue={student?.phone}
               aria-describedby="phone-error"
               required

@@ -13,7 +13,7 @@ import {
 const StudentFormSchema = z.object({
   name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
   email: z.string().email({ message: 'Por favor, introduce una dirección de correo electrónico válida.' }),
-  phone: z.string().min(10, { message: 'El número de teléfono parece demasiado corto.' }),
+  phone: z.string().min(9, { message: 'El número de teléfono debe tener al menos 9 dígitos.' }),
   address: z.string().min(5, { message: 'La dirección debe tener al menos 5 caracteres.' }),
 });
 
