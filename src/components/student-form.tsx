@@ -1,7 +1,7 @@
 'use client';
 
 import type { Student } from '@/lib/types';
-import { useActionState } from 'react';
+import { useActionState, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
 import { createStudent, updateStudent, type State } from '@/lib/actions';
 import { Input } from '@/components/ui/input';
@@ -20,8 +20,10 @@ export function StudentForm({ student }: { student?: Student | null }) {
     : createStudent;
   const [state, dispatch] = useActionState(action, initialState);
 
+  const formRef = useRef<HTMLFormElement>(null);
+
   return (
-    <form action={dispatch}>
+    <form ref={formRef} action={dispatch}>
       <Card className="w-full max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>{student ? 'Editar Estudiante' : 'Registrar Nuevo Estudiante'}</CardTitle>
@@ -38,6 +40,7 @@ export function StudentForm({ student }: { student?: Student | null }) {
               placeholder="p. ej. Jane Doe"
               defaultValue={student?.name}
               aria-describedby="name-error"
+              key={`name-${student?.id}`}
               required
             />
             <div id="name-error" aria-live="polite" aria-atomic="true">
@@ -58,6 +61,7 @@ export function StudentForm({ student }: { student?: Student | null }) {
               placeholder="p. ej. jane.doe@example.com"
               defaultValue={student?.email}
               aria-describedby="email-error"
+              key={`email-${student?.id}`}
               required
             />
             <div id="email-error" aria-live="polite" aria-atomic="true">
@@ -77,6 +81,7 @@ export function StudentForm({ student }: { student?: Student | null }) {
               placeholder="p. ej. 987654321"
               defaultValue={student?.phone}
               aria-describedby="phone-error"
+              key={`phone-${student?.id}`}
               required
             />
              <div id="phone-error" aria-live="polite" aria-atomic="true">
@@ -96,6 +101,7 @@ export function StudentForm({ student }: { student?: Student | null }) {
               placeholder="p. ej. 123 Main St, Anytown, USA"
               defaultValue={student?.address}
               aria-describedby="address-error"
+              key={`address-${student?.id}`}
               required
               rows={3}
             />
