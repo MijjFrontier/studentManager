@@ -1,3 +1,5 @@
+'use client';
+
 import { getStudentById } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -17,7 +19,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
+import type { Student } from '@/lib/types';
+import { useEffect, useState } from 'react';
 
 function DeleteButton({ id }: { id: string }) {
     const deleteStudentWithId = deleteStudent.bind(null, id);
@@ -32,7 +36,7 @@ function DeleteButton({ id }: { id: string }) {
             <AlertDialogContent>
                 <form action={deleteStudentWithId}>
                     <AlertDialogHeader>
-                    <AlertDialogTitle>¿Estás absolutamente seguro?</AlertDialogTitle>
+                    <AlertDialogTitle>¿Estás absolutely seguro?</AlertDialogTitle>
                     <AlertDialogDescription>
                         Esta acción no se puede deshacer. Esto eliminará permanentemente a este
                         estudiante y eliminará sus datos de nuestros servidores.
@@ -48,16 +52,68 @@ function DeleteButton({ id }: { id: string }) {
     );
 }
 
-
-export default async function StudentProfilePage({
+export default function StudentProfilePage({
   params,
 }: {
   params: { id: string };
 }) {
-  const student = await getStudentById(params.id);
+  const [student, setStudent] = useState<Student | null>(null);
+  
+  useEffect(() => {
+    getStudentById(params.id).then(data => {
+      if (!data) {
+        notFound();
+      } else {
+        setStudent(data);
+      }
+    });
+  }, [params.id]);
+
 
   if (!student) {
-    notFound();
+    return (
+        <div className="w-full max-w-4xl mx-auto">
+            <Card>
+                <CardHeader className="flex flex-col items-center text-center space-y-4 p-6 sm:p-8">
+                     <div className="animate-pulse rounded-full bg-muted w-24 h-24 border-4 border-background shadow-md"></div>
+                    <div>
+                        <div className="animate-pulse h-8 w-48 bg-muted rounded-md"></div>
+                         <div className="animate-pulse h-6 w-24 bg-muted rounded-md mt-2"></div>
+                    </div>
+                </CardHeader>
+                <CardContent className="p-6 sm:p-8 border-t">
+                    <h3 className="text-lg font-semibold mb-4">Información de Contacto</h3>
+                    <div className="space-y-4">
+                        <div className="flex items-start gap-4">
+                            <div className="animate-pulse h-5 w-5 bg-muted rounded"></div>
+                            <div>
+                                 <div className="animate-pulse h-5 w-32 bg-muted rounded-md"></div>
+                                 <div className="animate-pulse h-5 w-48 bg-muted rounded-md mt-1"></div>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-4">
+                            <div className="animate-pulse h-5 w-5 bg-muted rounded"></div>
+                            <div>
+                                <div className="animate-pulse h-5 w-24 bg-muted rounded-md"></div>
+                                <div className="animate-pulse h-5 w-36 bg-muted rounded-md mt-1"></div>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-4">
+                           <div className="animate-pulse h-5 w-5 bg-muted rounded"></div>
+                            <div>
+                                 <div className="animate-pulse h-5 w-24 bg-muted rounded-md"></div>
+                                 <div className="animate-pulse h-5 w-56 bg-muted rounded-md mt-1"></div>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+                <CardFooter className="flex justify-end gap-2 p-6 border-t">
+                     <div className="animate-pulse h-10 w-24 bg-muted rounded-md"></div>
+                     <div className="animate-pulse h-10 w-24 bg-muted rounded-md"></div>
+                </CardFooter>
+            </Card>
+        </div>
+    );
   }
 
   return (

@@ -37,7 +37,7 @@ export function StudentForm({ student }: { student?: Student | null }) {
             <Input
               id="name"
               name="name"
-              placeholder="p. ej. Jane Doe"
+              placeholder="p. ej. Pepe Ramirez"
               defaultValue={student?.name}
               aria-describedby="name-error"
               key={`name-${student?.id}`}
@@ -58,7 +58,7 @@ export function StudentForm({ student }: { student?: Student | null }) {
               id="email"
               name="email"
               type="email"
-              placeholder="p. ej. jane.doe@example.com"
+              placeholder="p. ej. pepe@gmail.com"
               defaultValue={student?.email}
               aria-describedby="email-error"
               key={`email-${student?.id}`}
@@ -98,7 +98,7 @@ export function StudentForm({ student }: { student?: Student | null }) {
             <Textarea
               id="address"
               name="address"
-              placeholder="p. ej. 123 Main St, Anytown, USA"
+              placeholder="p. ej. Av. Arequipa 1499, Lince"
               defaultValue={student?.address}
               aria-describedby="address-error"
               key={`address-${student?.id}`}
