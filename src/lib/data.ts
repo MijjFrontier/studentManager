@@ -3,12 +3,12 @@ import type { Student } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 
 // To persist data across hot reloads in development
-const globalForStudents = global as unknown as { students: Student[] };
+const globalForStudents = global as unknown as { students: Student[] | undefined };
 
+// Initialize students array only if it's not already defined
 if (!globalForStudents.students) {
     globalForStudents.students = [];
 }
-
 
 const ITEMS_PER_PAGE = 20;
 
@@ -19,11 +19,11 @@ export async function getStudents(options: { query?: string; page?: number } = {
   await simulateLatency();
   const { query, page = 1 } = options;
 
-  let filteredStudents = globalForStudents.students;
+  let filteredStudents = globalForStudents.students || [];
 
   if (query) {
     const lowercasedQuery = query.toLowerCase();
-    filteredStudents = globalForStudents.students.filter(
+    filteredStudents = filteredStudents.filter(
       (student) =>
         student.name.toLowerCase().includes(lowercasedQuery) ||
         student.email.toLowerCase().includes(lowercasedQuery) ||
@@ -40,10 +40,10 @@ export async function getStudents(options: { query?: string; page?: number } = {
 export async function getTotalStudentPages(query?: string) {
   await simulateLatency(100);
   
-  let filteredStudents = globalForStudents.students;
+  let filteredStudents = globalForStudents.students || [];
   if (query) {
     const lowercasedQuery = query.toLowerCase();
-    filteredStudents = globalForStudents.students.filter(
+    filteredStudents = filteredStudents.filter(
       (student) =>
         student.name.toLowerCase().includes(lowercasedQuery) ||
         student.email.toLowerCase().includes(lowercasedQuery) ||
@@ -56,7 +56,7 @@ export async function getTotalStudentPages(query?: string) {
 
 export async function getStudentById(id: string) {
   await simulateLatency();
-  const student = globalForStudents.students.find((s) => s.id === id);
+  const student = (globalForStudents.students || []).find((s) => s.id === id);
   if (!student) {
     return null;
   }
@@ -65,6 +65,11 @@ export async function getStudentById(id: string) {
 
 export async function addStudent(studentData: Omit<Student, 'id' | 'studentId' | 'avatarUrl'>) {
     await simulateLatency();
+    
+    if (!globalForStudents.students) {
+        globalForStudents.students = [];
+    }
+
     const newId = crypto.randomUUID();
     const newStudentId = `S${1000 + globalForStudents.students.length + 1}`;
     const newAvatarIndex = (globalForStudents.students.length % PlaceHolderImages.length);
@@ -81,6 +86,11 @@ export async function addStudent(studentData: Omit<Student, 'id' | 'studentId' |
 
 export async function updateStudent(id: string, updates: Partial<Omit<Student, 'id' | 'studentId' | 'avatarUrl'>>) {
     await simulateLatency();
+    
+    if (!globalForStudents.students) {
+        globalForStudents.students = [];
+    }
+    
     const studentIndex = globalForStudents.students.findIndex((s) => s.id === id);
     if (studentIndex === -1) {
         throw new Error('Student not found');
@@ -91,6 +101,11 @@ export async function updateStudent(id: string, updates: Partial<Omit<Student, '
 
 export async function deleteStudentById(id: string) {
     await simulateLatency();
+
+    if (!globalForStudents.students) {
+        globalForStudents.students = [];
+    }
+
     const initialLength = globalForStudents.students.length;
     globalForStudents.students = globalForStudents.students.filter((s) => s.id !== id);
     if (globalForStudents.students.length === initialLength) {
