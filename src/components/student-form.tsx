@@ -1,7 +1,7 @@
 'use client';
 
 import type { Student } from '@/lib/types';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useFormStatus } from 'react';
 import { createStudent, updateStudent, type State } from '@/lib/actions';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,7 +17,7 @@ export function StudentForm({ student }: { student?: Student | null }) {
   const action = student
     ? updateStudent.bind(null, student.id)
     : createStudent;
-  const [state, dispatch] = useFormState(action, initialState);
+  const [state, dispatch] = useActionState(action, initialState);
 
   return (
     <form action={dispatch}>
