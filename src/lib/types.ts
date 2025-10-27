@@ -5,4 +5,7 @@ export type Student = {
   email: string;
   phone: string;
   address: string;
+  studyProgram: string;
+  campus: string;
+  academicPeriod: string;
 };

@@ -5,9 +5,9 @@ import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Edit, Mail, Phone, MapPin, Trash2 } from 'lucide-react';
+import { Edit, Mail, Phone, MapPin, Trash2, Book, Building, Calendar } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { deleteStudent } from '@/lib/actions';
+import { deleteStudent, type State } from '@/lib/actions';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -126,29 +126,59 @@ export default function StudentProfilePage({
                 </div>
             </CardHeader>
             <CardContent className="p-6 sm:p-8 border-t">
-                <h3 className="text-lg font-semibold mb-4">Información de Contacto</h3>
-                <div className="space-y-4">
-                    <div className="flex items-start gap-4">
-                        <Mail className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
-                        <div>
-                            <p className="font-medium">Correo Electrónico</p>
-                            <a href={`mailto:${student.email}`} className="text-muted-foreground hover:text-primary transition-colors">
-                                {student.email}
-                            </a>
+                <div className="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 className="text-lg font-semibold mb-4">Información Académica</h3>
+                        <div className="space-y-4">
+                            <div className="flex items-start gap-4">
+                                <Book className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
+                                <div>
+                                    <p className="font-medium">Programa de estudios</p>
+                                    <p className="text-muted-foreground">{student.studyProgram}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-4">
+                                <Building className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
+                                <div>
+                                    <p className="font-medium">Campus</p>
+                                    <p className="text-muted-foreground">{student.campus}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-4">
+                                <Calendar className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
+                                <div>
+                                    <p className="font-medium">Periodo académico</p>
+                                    <p className="text-muted-foreground">{student.academicPeriod}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div className="flex items-start gap-4">
-                        <Phone className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
-                        <div>
-                            <p className="font-medium">Teléfono</p>
-                            <p className="text-muted-foreground">{student.phone}</p>
-                        </div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                        <MapPin className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
-                        <div>
-                            <p className="font-medium">Dirección</p>
-                            <p className="text-muted-foreground">{student.address}</p>
+                    <div>
+                        <h3 className="text-lg font-semibold mb-4">Información de Contacto</h3>
+                        <div className="space-y-4">
+                            <div className="flex items-start gap-4">
+                                <Mail className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
+                                <div>
+                                    <p className="font-medium">Correo Electrónico</p>
+                                    <a href={`mailto:${student.email}`} className="text-muted-foreground hover:text-primary transition-colors">
+                                        {student.email}
+                                    </a>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-4">
+                                <Phone className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
+                                <div>
+                                    <p className="font-medium">Teléfono</p>
+                                    <p className="text-muted-foreground">{student.phone}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-4">
+                                <MapPin className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
+                                <div>
+                                    <p className="font-medium">Dirección</p>
+                                    <p className="text-muted-foreground">{student.address}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

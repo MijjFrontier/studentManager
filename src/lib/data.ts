@@ -1,8 +1,7 @@
-
 import type { Student } from './types';
 
 // To persist data across hot reloads in development
-const globalForStudents = global as unknown as { students: Student[] | undefined };
+const globalForStudents = global as unknown as { students?: Student[] };
 
 // Initialize students array only if it's not already defined
 if (!globalForStudents.students) {

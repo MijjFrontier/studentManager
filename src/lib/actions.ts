@@ -1,4 +1,3 @@
-
 'use server';
 
 import { z } from 'zod';
@@ -15,6 +14,9 @@ const StudentFormSchema = z.object({
   email: z.string().email({ message: 'Por favor, introduce una dirección de correo electrónico válida.' }),
   phone: z.string().min(9, { message: 'El número de teléfono debe tener al menos 9 dígitos.' }),
   address: z.string().min(5, { message: 'La dirección debe tener al menos 5 caracteres.' }),
+  studyProgram: z.string().min(2, { message: 'El programa de estudios es requerido.' }),
+  campus: z.string().min(2, { message: 'El campus es requerido.' }),
+  academicPeriod: z.string().min(2, { message: 'El periodo académico es requerido.' }),
 });
 
 export type State = {
@@ -23,6 +25,9 @@ export type State = {
     email?: string[];
     phone?: string[];
     address?: string[];
+    studyProgram?: string[];
+    campus?: string[];
+    academicPeriod?: string[];
   };
   message?: string | null;
 };
@@ -33,6 +38,9 @@ export async function createStudent(prevState: State, formData: FormData) {
     email: formData.get('email'),
     phone: formData.get('phone'),
     address: formData.get('address'),
+    studyProgram: formData.get('studyProgram'),
+    campus: formData.get('campus'),
+    academicPeriod: formData.get('academicPeriod'),
   });
 
   if (!validatedFields.success) {
@@ -58,6 +66,9 @@ export async function updateStudent(id: string, prevState: State, formData: Form
     email: formData.get('email'),
     phone: formData.get('phone'),
     address: formData.get('address'),
+    studyProgram: formData.get('studyProgram'),
+    campus: formData.get('campus'),
+    academicPeriod: formData.get('academicPeriod'),
   });
 
    if (!validatedFields.success) {

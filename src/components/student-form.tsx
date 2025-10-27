@@ -32,45 +32,47 @@ export function StudentForm({ student }: { student?: Student | null }) {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="name">Nombre Completo</Label>
-            <Input
-              id="name"
-              name="name"
-              placeholder="p. ej. Pepe Ramirez"
-              defaultValue={student?.name}
-              aria-describedby="name-error"
-              key={`name-${student?.id}`}
-              required
-            />
-            <div id="name-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.name &&
-                state.errors.name.map((error: string) => (
-                  <p className="mt-2 text-sm text-destructive" key={error}>
-                    {error}
-                  </p>
-                ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="name">Nombre Completo</Label>
+              <Input
+                id="name"
+                name="name"
+                placeholder="p. ej. Pepe Ramirez"
+                defaultValue={student?.name}
+                aria-describedby="name-error"
+                key={`name-${student?.id}`}
+                required
+              />
+              <div id="name-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.name &&
+                  state.errors.name.map((error: string) => (
+                    <p className="mt-2 text-sm text-destructive" key={error}>
+                      {error}
+                    </p>
+                  ))}
+              </div>
             </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Correo Electrónico</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="p. ej. pepe@gmail.com"
-              defaultValue={student?.email}
-              aria-describedby="email-error"
-              key={`email-${student?.id}`}
-              required
-            />
-            <div id="email-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.email &&
-                state.errors.email.map((error: string) => (
-                  <p className="mt-2 text-sm text-destructive" key={error}>
-                    {error}
-                  </p>
-                ))}
+            <div className="space-y-2">
+              <Label htmlFor="email">Correo Electrónico</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="p. ej. pepe@gmail.com"
+                defaultValue={student?.email}
+                aria-describedby="email-error"
+                key={`email-${student?.id}`}
+                required
+              />
+              <div id="email-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.email &&
+                  state.errors.email.map((error: string) => (
+                    <p className="mt-2 text-sm text-destructive" key={error}>
+                      {error}
+                    </p>
+                  ))}
+              </div>
             </div>
           </div>
           <div className="space-y-2">
@@ -91,6 +93,68 @@ export function StudentForm({ student }: { student?: Student | null }) {
                     {error}
                   </p>
                 ))}
+            </div>
+          </div>
+           <div className="space-y-2">
+            <Label htmlFor="studyProgram">Programa de estudios</Label>
+            <Input
+              id="studyProgram"
+              name="studyProgram"
+              placeholder="p. ej. Desarrollo de Sistemas Front-end y Back-end"
+              defaultValue={student?.studyProgram}
+              aria-describedby="studyProgram-error"
+              key={`studyProgram-${student?.id}`}
+              required
+            />
+             <div id="studyProgram-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.studyProgram &&
+                state.errors.studyProgram.map((error: string) => (
+                  <p className="mt-2 text-sm text-destructive" key={error}>
+                    {error}
+                  </p>
+                ))}
+            </div>
+          </div>
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="campus">Campus</Label>
+              <Input
+                id="campus"
+                name="campus"
+                placeholder="p. ej. Sede Virtual 100%"
+                defaultValue={student?.campus}
+                aria-describedby="campus-error"
+                key={`campus-${student?.id}`}
+                required
+              />
+              <div id="campus-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.campus &&
+                  state.errors.campus.map((error: string) => (
+                    <p className="mt-2 text-sm text-destructive" key={error}>
+                      {error}
+                    </p>
+                  ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="academicPeriod">Periodo académico</Label>
+              <Input
+                id="academicPeriod"
+                name="academicPeriod"
+                placeholder="p. ej. Quinto Periodo Académico"
+                defaultValue={student?.academicPeriod}
+                aria-describedby="academicPeriod-error"
+                key={`academicPeriod-${student?.id}`}
+                required
+              />
+              <div id="academicPeriod-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.academicPeriod &&
+                  state.errors.academicPeriod.map((error: string) => (
+                    <p className="mt-2 text-sm text-destructive" key={error}>
+                      {error}
+                    </p>
+                  ))}
+              </div>
             </div>
           </div>
           <div className="space-y-2">
