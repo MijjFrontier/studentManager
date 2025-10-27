@@ -4,8 +4,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/header';
 
 export const metadata: Metadata = {
-  title: 'Java Student Manager',
-  description: 'Manage your students with ease.',
+  title: 'Gestor de Estudiantes de Java',
+  description: 'Gestiona a tus estudiantes con facilidad.',
 };
 
 export default function RootLayout({
@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="es" className="h-full">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

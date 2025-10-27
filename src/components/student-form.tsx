@@ -23,18 +23,18 @@ export function StudentForm({ student }: { student?: Student | null }) {
     <form action={dispatch}>
       <Card className="w-full max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle>{student ? 'Edit Student' : 'Register New Student'}</CardTitle>
+          <CardTitle>{student ? 'Editar Estudiante' : 'Registrar Nuevo Estudiante'}</CardTitle>
           <CardDescription>
-            {student ? 'Update the details for this student.' : 'Fill in the details for the new student.'}
+            {student ? 'Actualiza los detalles de este estudiante.' : 'Completa los detalles para el nuevo estudiante.'}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
+            <Label htmlFor="name">Nombre Completo</Label>
             <Input
               id="name"
               name="name"
-              placeholder="e.g. Jane Doe"
+              placeholder="p. ej. Jane Doe"
               defaultValue={student?.name}
               aria-describedby="name-error"
               required
@@ -49,12 +49,12 @@ export function StudentForm({ student }: { student?: Student | null }) {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
+            <Label htmlFor="email">Correo Electrónico</Label>
             <Input
               id="email"
               name="email"
               type="email"
-              placeholder="e.g. jane.doe@example.com"
+              placeholder="p. ej. jane.doe@example.com"
               defaultValue={student?.email}
               aria-describedby="email-error"
               required
@@ -69,11 +69,11 @@ export function StudentForm({ student }: { student?: Student | null }) {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
+            <Label htmlFor="phone">Número de Teléfono</Label>
             <Input
               id="phone"
               name="phone"
-              placeholder="e.g. (555) 555-5555"
+              placeholder="p. ej. (555) 555-5555"
               defaultValue={student?.phone}
               aria-describedby="phone-error"
               required
@@ -88,11 +88,11 @@ export function StudentForm({ student }: { student?: Student | null }) {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="address">Address</Label>
+            <Label htmlFor="address">Dirección</Label>
             <Textarea
               id="address"
               name="address"
-              placeholder="e.g. 123 Main St, Anytown, USA"
+              placeholder="p. ej. 123 Main St, Anytown, USA"
               defaultValue={student?.address}
               aria-describedby="address-error"
               required
@@ -117,9 +117,9 @@ export function StudentForm({ student }: { student?: Student | null }) {
         </CardContent>
         <CardFooter className="flex justify-end gap-4">
           <Button variant="outline" asChild>
-            <Link href={student ? `/students/${student.id}` : '/'}>Cancel</Link>
+            <Link href={student ? `/students/${student.id}` : '/'}>Cancelar</Link>
           </Button>
-          <SubmitButton text={student ? 'Update Student' : 'Create Student'} />
+          <SubmitButton text={student ? 'Actualizar Estudiante' : 'Crear Estudiante'} />
         </CardFooter>
       </Card>
     </form>
@@ -134,7 +134,7 @@ function SubmitButton({ text }: { text: string }) {
       {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Processing...
+          Procesando...
         </>
       ) : (
         text

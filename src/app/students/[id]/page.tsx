@@ -26,21 +26,21 @@ function DeleteButton({ id }: { id: string }) {
             <AlertDialogTrigger asChild>
                 <Button variant="destructive" className="gap-2">
                     <Trash2 className="h-4 w-4" />
-                    Delete
+                    Eliminar
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <form action={deleteStudentWithId}>
                     <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogTitle>¿Estás absolutamente seguro?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete this
-                        student and remove their data from our servers.
+                        Esta acción no se puede deshacer. Esto eliminará permanentemente a este
+                        estudiante y eliminará sus datos de nuestros servidores.
                     </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction type="submit">Continue</AlertDialogAction>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction type="submit">Continuar</AlertDialogAction>
                     </AlertDialogFooter>
                 </form>
             </AlertDialogContent>
@@ -78,12 +78,12 @@ export default async function StudentProfilePage({
                 </div>
             </CardHeader>
             <CardContent className="p-6 sm:p-8 border-t">
-                <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
+                <h3 className="text-lg font-semibold mb-4">Información de Contacto</h3>
                 <div className="space-y-4">
                     <div className="flex items-start gap-4">
                         <Mail className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
                         <div>
-                            <p className="font-medium">Email</p>
+                            <p className="font-medium">Correo Electrónico</p>
                             <a href={`mailto:${student.email}`} className="text-muted-foreground hover:text-primary transition-colors">
                                 {student.email}
                             </a>
@@ -92,14 +92,14 @@ export default async function StudentProfilePage({
                     <div className="flex items-start gap-4">
                         <Phone className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
                         <div>
-                            <p className="font-medium">Phone</p>
+                            <p className="font-medium">Teléfono</p>
                             <p className="text-muted-foreground">{student.phone}</p>
                         </div>
                     </div>
                     <div className="flex items-start gap-4">
                         <MapPin className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
                         <div>
-                            <p className="font-medium">Address</p>
+                            <p className="font-medium">Dirección</p>
                             <p className="text-muted-foreground">{student.address}</p>
                         </div>
                     </div>
@@ -110,7 +110,7 @@ export default async function StudentProfilePage({
                 <Button asChild>
                     <Link href={`/students/${student.id}/edit`} className="gap-2">
                         <Edit className="h-4 w-4" />
-                        Edit
+                        Editar
                     </Link>
                 </Button>
             </CardFooter>

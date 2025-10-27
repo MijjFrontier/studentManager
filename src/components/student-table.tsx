@@ -29,7 +29,7 @@ function DeleteAction({ id }: { id: string }) {
         className="w-full text-left relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 text-destructive"
       >
         <Trash2 className="mr-2 h-4 w-4" />
-        <span>Delete</span>
+        <span>Eliminar</span>
       </button>
     </form>
   );
@@ -47,8 +47,8 @@ export default async function StudentTable({
   if (students.length === 0) {
     return (
       <div className="text-center text-muted-foreground py-12">
-        <p className="text-lg font-semibold">No students found.</p>
-        <p>Try adjusting your search or adding a new student.</p>
+        <p className="text-lg font-semibold">No se encontraron estudiantes.</p>
+        <p>Intenta ajustar tu búsqueda o agregar un nuevo estudiante.</p>
       </div>
     );
   }
@@ -59,10 +59,10 @@ export default async function StudentTable({
         <TableHeader>
           <TableRow>
             <TableHead className="w-[80px]">Avatar</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Student ID</TableHead>
-            <TableHead className="hidden md:table-cell">Email</TableHead>
-            <TableHead className="w-[50px] text-right">Actions</TableHead>
+            <TableHead>Nombre</TableHead>
+            <TableHead>ID de Estudiante</TableHead>
+            <TableHead className="hidden md:table-cell">Correo Electrónico</TableHead>
+            <TableHead className="w-[50px] text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -95,14 +95,14 @@ export default async function StudentTable({
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
                       <MoreVertical className="h-4 w-4" />
-                      <span className="sr-only">More actions</span>
+                      <span className="sr-only">Más acciones</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>
                       <Link href={`/students/${student.id}/edit`} className="flex items-center">
                         <Edit className="mr-2 h-4 w-4" />
-                        <span>Edit</span>
+                        <span>Editar</span>
                       </Link>
                     </DropdownMenuItem>
                     <DeleteAction id={student.id} />

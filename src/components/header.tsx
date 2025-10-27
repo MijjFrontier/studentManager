@@ -12,13 +12,13 @@ export function Header() {
               <GraduationCap className="h-6 w-6 text-primary" />
             </div>
             <span className="text-xl font-bold tracking-tight text-foreground font-headline">
-              Java Student Manager
+              Gestor de Estudiantes
             </span>
           </Link>
           <Button asChild className="gap-2">
             <Link href="/students/new">
               <UserPlus />
-              <span className="hidden sm:inline">Add Student</span>
+              <span className="hidden sm:inline">Añadir Estudiante</span>
             </Link>
           </Button>
         </div>

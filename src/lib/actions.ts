@@ -11,10 +11,10 @@ import {
 } from '@/lib/data';
 
 const StudentFormSchema = z.object({
-  name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
-  email: z.string().email({ message: 'Please enter a valid email address.' }),
-  phone: z.string().min(10, { message: 'Phone number seems too short.' }),
-  address: z.string().min(5, { message: 'Address must be at least 5 characters.' }),
+  name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
+  email: z.string().email({ message: 'Por favor, introduce una dirección de correo electrónico válida.' }),
+  phone: z.string().min(10, { message: 'El número de teléfono parece demasiado corto.' }),
+  address: z.string().min(5, { message: 'La dirección debe tener al menos 5 caracteres.' }),
 });
 
 export type State = {
@@ -38,14 +38,14 @@ export async function createStudent(prevState: State, formData: FormData) {
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Failed to create student. Please check the fields.',
+      message: 'Error al crear el estudiante. Por favor, comprueba los campos.',
     };
   }
 
   try {
     await addStudent(validatedFields.data);
   } catch (error) {
-    return { message: 'Database Error: Failed to Create Student.' };
+    return { message: 'Error de base de datos: No se pudo crear el estudiante.' };
   }
 
   revalidatePath('/');
@@ -63,14 +63,14 @@ export async function updateStudent(id: string, prevState: State, formData: Form
    if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Failed to update student. Please check the fields.',
+      message: 'Error al actualizar el estudiante. Por favor, comprueba los campos.',
     };
   }
 
   try {
     await updateStudentData(id, validatedFields.data);
   } catch (e) {
-    return { message: 'Database Error: Failed to Update Student.' };
+    return { message: 'Error de base de datos: No se pudo actualizar el estudiante.' };
   }
 
   revalidatePath('/');
@@ -84,6 +84,6 @@ export async function deleteStudent(id: string) {
     revalidatePath('/');
     redirect('/');
   } catch (e) {
-    return { message: 'Database Error: Failed to Delete Student.' };
+    return { message: 'Error de base de datos: No se pudo eliminar el estudiante.' };
   }
 }

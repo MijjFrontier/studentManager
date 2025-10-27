@@ -41,9 +41,9 @@ export default async function Home({
     <div className="w-full space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Student Roster</CardTitle>
+          <CardTitle>Lista de Estudiantes</CardTitle>
           <div className="pt-4">
-            <Search placeholder="Search students by name or email..." />
+            <Search placeholder="Buscar estudiantes por nombre o email..." />
           </div>
         </CardHeader>
         <CardContent>
