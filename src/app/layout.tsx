@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/header';
+import { ToasterHandler } from '@/components/toaster-handler';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'Gestor de Estudiantes',
@@ -35,6 +37,9 @@ export default function RootLayout({
           </main>
         </div>
         <Toaster />
+        <Suspense fallback={null}>
+          <ToasterHandler />
+        </Suspense>
       </body>
     </html>
   );

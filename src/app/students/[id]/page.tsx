@@ -1,7 +1,7 @@
 'use client';
 
 import { getStudentById } from '@/lib/data';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -20,10 +20,18 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import type { Student } from '@/lib/types';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useActionState } from 'react';
 
 function DeleteButton({ id }: { id: string }) {
-    const deleteStudentWithId = deleteStudent.bind(null, id);
+    const [state, action] = useActionState(deleteStudent.bind(null, id), { message: null });
+
+    useEffect(() => {
+        if (state?.message) {
+            // Handle error, maybe show a toast
+            console.error(state.message);
+        }
+    }, [state]);
+
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -33,7 +41,7 @@ function DeleteButton({ id }: { id: string }) {
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
-                <form action={deleteStudentWithId}>
+                <form action={action}>
                     <AlertDialogHeader>
                     <AlertDialogTitle>¿Estás absolutely seguro?</AlertDialogTitle>
                     <AlertDialogDescription>

@@ -1,7 +1,7 @@
 'use client';
 
 import type { Student } from '@/lib/types';
-import { useActionState, useRef } from 'react';
+import { useActionState, useRef, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { createStudent, updateStudent, type State } from '@/lib/actions';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export function StudentForm({ student }: { student?: Student | null }) {
   const initialState: State = { message: null, errors: {} };
@@ -19,8 +20,14 @@ export function StudentForm({ student }: { student?: Student | null }) {
     ? updateStudent.bind(null, student.id)
     : createStudent;
   const [state, dispatch] = useActionState(action, initialState);
-
   const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state.success && state.redirectPath) {
+      router.push(state.redirectPath);
+    }
+  }, [state, router]);
 
   return (
     <form ref={formRef} action={dispatch}>
@@ -41,7 +48,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
                 placeholder="p. ej. Pepe Ramirez"
                 defaultValue={student?.name}
                 aria-describedby="name-error"
-                key={`name-${student?.id}`}
                 required
               />
               <div id="name-error" aria-live="polite" aria-atomic="true">
@@ -62,7 +68,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
                 placeholder="p. ej. pepe@gmail.com"
                 defaultValue={student?.email}
                 aria-describedby="email-error"
-                key={`email-${student?.id}`}
                 required
               />
               <div id="email-error" aria-live="polite" aria-atomic="true">
@@ -83,7 +88,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
               placeholder="p. ej. 987654321"
               defaultValue={student?.phone}
               aria-describedby="phone-error"
-              key={`phone-${student?.id}`}
               required
             />
              <div id="phone-error" aria-live="polite" aria-atomic="true">
@@ -103,7 +107,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
               placeholder="p. ej. Desarrollo de Sistemas Front-end y Back-end"
               defaultValue={student?.studyProgram}
               aria-describedby="studyProgram-error"
-              key={`studyProgram-${student?.id}`}
               required
             />
              <div id="studyProgram-error" aria-live="polite" aria-atomic="true">
@@ -124,7 +127,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
                 placeholder="p. ej. Sede Virtual 100%"
                 defaultValue={student?.campus}
                 aria-describedby="campus-error"
-                key={`campus-${student?.id}`}
                 required
               />
               <div id="campus-error" aria-live="polite" aria-atomic="true">
@@ -144,7 +146,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
                 placeholder="p. ej. Quinto Periodo Académico"
                 defaultValue={student?.academicPeriod}
                 aria-describedby="academicPeriod-error"
-                key={`academicPeriod-${student?.id}`}
                 required
               />
               <div id="academicPeriod-error" aria-live="polite" aria-atomic="true">
@@ -165,7 +166,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
               placeholder="p. ej. Av. Arequipa 1499, Lince"
               defaultValue={student?.address}
               aria-describedby="address-error"
-              key={`address-${student?.id}`}
               required
               rows={3}
             />
@@ -178,7 +178,7 @@ export function StudentForm({ student }: { student?: Student | null }) {
                 ))}
             </div>
           </div>
-          {state.message && (
+          {state.message && !state.success && (
             <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Error</AlertTitle>
