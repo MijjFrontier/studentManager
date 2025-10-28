@@ -33,7 +33,7 @@ import {
 function DeleteAction({ id }: { id: string }) {
   const deleteStudentWithId = deleteStudent.bind(null, id);
   return (
-    <form action={deleteStudentWithId} className="w-full">
+    <AlertDialog>
        <AlertDialogTrigger asChild>
         <button
           type="button"
@@ -44,6 +44,7 @@ function DeleteAction({ id }: { id: string }) {
         </button>
       </AlertDialogTrigger>
       <AlertDialogContent>
+        <form action={deleteStudentWithId}>
           <AlertDialogHeader>
             <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -56,8 +57,9 @@ function DeleteAction({ id }: { id: string }) {
                 <button type="submit">Continuar</button>
             </AlertDialogAction>
           </AlertDialogFooter>
+        </form>
       </AlertDialogContent>
-    </form>
+    </AlertDialog>
   );
 }
 
@@ -105,7 +107,6 @@ export default async function StudentTable({
                 {student.email}
               </TableCell>
               <TableCell className="text-right">
-                <AlertDialog>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
@@ -123,7 +124,6 @@ export default async function StudentTable({
                       <DeleteAction id={student.id} />
                     </DropdownMenuContent>
                   </DropdownMenu>
-                </AlertDialog>
               </TableCell>
             </TableRow>
           ))}
