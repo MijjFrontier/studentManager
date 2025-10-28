@@ -30,7 +30,7 @@ export function StudentForm({ student }: { student?: Student | null }) {
   }, [state, router]);
 
   return (
-    <form ref={formRef} action={dispatch}>
+    <form ref={formRef} action={dispatch} key={student?.id || 'new'}>
       <Card className="w-full max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>{student ? 'Editar Estudiante' : 'Registrar Nuevo Estudiante'}</CardTitle>
