@@ -1,7 +1,7 @@
 'use client';
 
 import type { Student } from '@/lib/types';
-import { useActionState, useRef, useEffect } from 'react';
+import { useActionState, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
 import { createStudent, updateStudent, type State } from '@/lib/actions';
 import { Input } from '@/components/ui/input';
@@ -23,12 +23,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    if (state.success && state.redirectPath) {
-      router.push(state.redirectPath);
-    }
-  }, [state, router]);
-
   return (
     <form ref={formRef} action={dispatch} key={student?.id || 'new'}>
       <Card className="w-full max-w-2xl mx-auto">
@@ -48,7 +42,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
                 placeholder="p. ej. Pepe Ramirez"
                 defaultValue={student?.name}
                 aria-describedby="name-error"
-                required
               />
               <div id="name-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.name &&
@@ -68,7 +61,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
                 placeholder="p. ej. pepe@gmail.com"
                 defaultValue={student?.email}
                 aria-describedby="email-error"
-                required
               />
               <div id="email-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.email &&
@@ -88,7 +80,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
               placeholder="p. ej. 987654321"
               defaultValue={student?.phone}
               aria-describedby="phone-error"
-              required
             />
              <div id="phone-error" aria-live="polite" aria-atomic="true">
               {state.errors?.phone &&
@@ -107,7 +98,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
               placeholder="p. ej. Desarrollo de Sistemas Front-end y Back-end"
               defaultValue={student?.studyProgram}
               aria-describedby="studyProgram-error"
-              required
             />
              <div id="studyProgram-error" aria-live="polite" aria-atomic="true">
               {state.errors?.studyProgram &&
@@ -127,7 +117,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
                 placeholder="p. ej. Sede Virtual 100%"
                 defaultValue={student?.campus}
                 aria-describedby="campus-error"
-                required
               />
               <div id="campus-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.campus &&
@@ -146,7 +135,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
                 placeholder="p. ej. Quinto Periodo Académico"
                 defaultValue={student?.academicPeriod}
                 aria-describedby="academicPeriod-error"
-                required
               />
               <div id="academicPeriod-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.academicPeriod &&
@@ -166,7 +154,6 @@ export function StudentForm({ student }: { student?: Student | null }) {
               placeholder="p. ej. Av. Arequipa 1499, Lince"
               defaultValue={student?.address}
               aria-describedby="address-error"
-              required
               rows={3}
             />
              <div id="address-error" aria-live="polite" aria-atomic="true">
