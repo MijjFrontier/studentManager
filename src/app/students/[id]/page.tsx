@@ -1,7 +1,7 @@
 'use client';
 
 import { getStudentById } from '@/lib/data';
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -23,6 +23,7 @@ import type { Student } from '@/lib/types';
 import { useEffect, useState, useActionState } from 'react';
 
 function DeleteButton({ id }: { id: string }) {
+    const router = useRouter();
     const [state, action] = useActionState(deleteStudent.bind(null, id), { message: null });
 
     useEffect(() => {
@@ -30,7 +31,10 @@ function DeleteButton({ id }: { id: string }) {
             // Handle error, maybe show a toast
             console.error(state.message);
         }
-    }, [state]);
+        if (state?.success) {
+            router.push(`/?success_message=${encodeURIComponent('Estudiante eliminado con éxito.')}`);
+        }
+    }, [state, router]);
 
     return (
         <AlertDialog>
@@ -180,13 +184,15 @@ export default function StudentProfilePage({
                                     <p className="text-muted-foreground">{student.phone}</p>
                                 </div>
                             </div>
-                            <div className="flex items-start gap-4">
-                                <MapPin className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
-                                <div>
-                                    <p className="font-medium">Dirección</p>
-                                    <p className="text-muted-foreground">{student.address}</p>
+                             {student.address && (
+                                <div className="flex items-start gap-4">
+                                    <MapPin className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
+                                    <div>
+                                        <p className="font-medium">Dirección</p>
+                                        <p className="text-muted-foreground">{student.address}</p>
+                                    </div>
                                 </div>
-                            </div>
+                             )}
                         </div>
                     </div>
                 </div>
