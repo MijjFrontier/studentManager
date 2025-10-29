@@ -147,23 +147,14 @@ export function StudentForm({ student }: { student?: Student | null }) {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="address">Dirección</Label>
+            <Label htmlFor="address">Dirección (Opcional)</Label>
             <Textarea
               id="address"
               name="address"
               placeholder="p. ej. Av. Arequipa 1499, Lince"
               defaultValue={student?.address}
-              aria-describedby="address-error"
               rows={3}
             />
-             <div id="address-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.address &&
-                state.errors.address.map((error: string) => (
-                  <p className="mt-2 text-sm text-destructive" key={error}>
-                    {error}
-                  </p>
-                ))}
-            </div>
           </div>
           {state.message && !state.success && (
             <Alert variant="destructive">

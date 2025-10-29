@@ -14,7 +14,7 @@ const StudentFormSchema = z.object({
   name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
   email: z.string().email({ message: 'Por favor, introduce una dirección de correo electrónico válida.' }),
   phone: z.string().regex(/^\d{9}$/, { message: 'El número de teléfono debe tener 9 dígitos.' }),
-  address: z.string().min(5, { message: 'La dirección debe tener al menos 5 caracteres.' }),
+  address: z.string().optional(),
   studyProgram: z.string().min(2, { message: 'El programa de estudios es requerido.' }),
   campus: z.string().min(2, { message: 'El campus es requerido.' }),
   academicPeriod: z.string().min(2, { message: 'El periodo académico es requerido.' }),
@@ -45,9 +45,14 @@ export async function createStudent(prevState: State, formData: FormData) {
       success: false,
     };
   }
+  
+  const dataToSave = {
+    ...validatedFields.data,
+    address: validatedFields.data.address || '',
+  };
 
   try {
-    await addStudent(validatedFields.data);
+    await addStudent(dataToSave);
   } catch (error) {
     return { message: 'Error de base de datos: No se pudo crear el estudiante.', success: false };
   }
@@ -66,9 +71,14 @@ export async function updateStudent(id: string, prevState: State, formData: Form
       success: false,
     };
   }
+  
+  const dataToSave = {
+    ...validatedFields.data,
+    address: validatedFields.data.address || '',
+  };
 
   try {
-    await updateStudentData(id, validatedFields.data);
+    await updateStudentData(id, dataToSave);
   } catch (e) {
     return { message: 'Error de base de datos: No se pudo actualizar el estudiante.', success: false };
   }
