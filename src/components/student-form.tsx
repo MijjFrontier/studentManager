@@ -1,7 +1,7 @@
 'use client';
 
-import type { Student } from '@/lib/types';
-import { useActionState, useRef } from 'react';
+import type { Student, Campus, StudyProgram, AcademicPeriod } from '@/lib/types';
+import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { createStudent, updateStudent, type State } from '@/lib/actions';
 import { Input } from '@/components/ui/input';
@@ -12,19 +12,33 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
-export function StudentForm({ student }: { student?: Student | null }) {
+export function StudentForm({ 
+  student,
+  campuses,
+  studyPrograms,
+  academicPeriods
+}: { 
+  student?: Student | null,
+  campuses: Campus[],
+  studyPrograms: StudyProgram[],
+  academicPeriods: AcademicPeriod[]
+}) {
   const initialState: State = { message: null, errors: {} };
   const action = student
     ? updateStudent.bind(null, student.id)
     : createStudent;
   const [state, dispatch] = useActionState(action, initialState);
-  const formRef = useRef<HTMLFormElement>(null);
-  const router = useRouter();
 
   return (
-    <form ref={formRef} action={dispatch} key={student?.id || 'new'}>
+    <form action={dispatch} key={student?.id || 'new'}>
       <Card className="w-full max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>{student ? 'Editar Estudiante' : 'Registrar Nuevo Estudiante'}</CardTitle>
@@ -92,13 +106,18 @@ export function StudentForm({ student }: { student?: Student | null }) {
           </div>
            <div className="space-y-2">
             <Label htmlFor="studyProgram">Programa de estudios</Label>
-            <Input
-              id="studyProgram"
-              name="studyProgram"
-              placeholder="p. ej. Desarrollo de Sistemas Front-end y Back-end"
-              defaultValue={student?.studyProgram}
-              aria-describedby="studyProgram-error"
-            />
+             <Select name="studyProgram" defaultValue={student?.studyProgram}>
+              <SelectTrigger id="studyProgram" aria-describedby="studyProgram-error">
+                <SelectValue placeholder="Selecciona un programa" />
+              </SelectTrigger>
+              <SelectContent>
+                {studyPrograms.map(program => (
+                  <SelectItem key={program.id} value={program.name}>
+                    {program.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
              <div id="studyProgram-error" aria-live="polite" aria-atomic="true">
               {state.errors?.studyProgram &&
                 state.errors.studyProgram.map((error: string) => (
@@ -111,13 +130,18 @@ export function StudentForm({ student }: { student?: Student | null }) {
            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="campus">Campus</Label>
-              <Input
-                id="campus"
-                name="campus"
-                placeholder="p. ej. Sede Virtual 100%"
-                defaultValue={student?.campus}
-                aria-describedby="campus-error"
-              />
+              <Select name="campus" defaultValue={student?.campus}>
+                <SelectTrigger id="campus" aria-describedby="campus-error">
+                  <SelectValue placeholder="Selecciona un campus" />
+                </SelectTrigger>
+                <SelectContent>
+                  {campuses.map(campus => (
+                    <SelectItem key={campus.id} value={campus.name}>
+                      {campus.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <div id="campus-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.campus &&
                   state.errors.campus.map((error: string) => (
@@ -129,13 +153,18 @@ export function StudentForm({ student }: { student?: Student | null }) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="academicPeriod">Periodo académico</Label>
-              <Input
-                id="academicPeriod"
-                name="academicPeriod"
-                placeholder="p. ej. Quinto Periodo Académico"
-                defaultValue={student?.academicPeriod}
-                aria-describedby="academicPeriod-error"
-              />
+              <Select name="academicPeriod" defaultValue={student?.academicPeriod}>
+                <SelectTrigger id="academicPeriod" aria-describedby="academicPeriod-error">
+                  <SelectValue placeholder="Selecciona un periodo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {academicPeriods.map(period => (
+                    <SelectItem key={period.id} value={period.name}>
+                      {period.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <div id="academicPeriod-error" aria-live="polite" aria-atomic="true">
                 {state.errors?.academicPeriod &&
                   state.errors.academicPeriod.map((error: string) => (
@@ -156,7 +185,7 @@ export function StudentForm({ student }: { student?: Student | null }) {
               rows={3}
             />
           </div>
-          {state.message && !state.success && (
+          {state.message && (
             <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Error</AlertTitle>

@@ -9,3 +9,18 @@ export type Student = {
   campus: string;
   academicPeriod: string;
 };
+
+export type Campus = {
+  id: string;
+  name: string;
+};
+
+export type StudyProgram = {
+  id: string;
+  name: string;
+};
+
+export type AcademicPeriod = {
+  id: string;
+  name: string;
+};
