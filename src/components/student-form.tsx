@@ -1,7 +1,7 @@
 'use client';
 
-import type { Student, Campus, StudyProgram, AcademicPeriod } from '@/lib/types';
-import { useActionState } from 'react';
+import type { Student, Level, Grade, Section } from '@/lib/types';
+import { useActionState, useState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { createStudent, updateStudent, type State } from '@/lib/actions';
 import { Input } from '@/components/ui/input';
@@ -19,23 +19,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { grades as allGrades, getGradesByLevel } from '@/lib/select-data';
 
 export function StudentForm({ 
   student,
-  campuses,
-  studyPrograms,
-  academicPeriods
+  levels,
+  sections
 }: { 
   student?: Student | null,
-  campuses: Campus[],
-  studyPrograms: StudyProgram[],
-  academicPeriods: AcademicPeriod[]
+  levels: Level[],
+  sections: Section[],
 }) {
   const initialState: State = { message: null, errors: {} };
   const action = student
     ? updateStudent.bind(null, student.id)
     : createStudent;
   const [state, dispatch] = useActionState(action, initialState);
+
+  const [selectedLevel, setSelectedLevel] = useState(student?.level || '');
+  const [availableGrades, setAvailableGrades] = useState<Grade[]>([]);
+
+  useEffect(() => {
+    if (student?.level) {
+      setAvailableGrades(getGradesByLevel(student.level));
+    }
+  }, [student?.level]);
+
+  const handleLevelChange = (levelName: string) => {
+    setSelectedLevel(levelName);
+    setAvailableGrades(getGradesByLevel(levelName));
+  };
 
   return (
     <form action={dispatch} key={student?.id || 'new'}>
@@ -104,47 +117,24 @@ export function StudentForm({
                 ))}
             </div>
           </div>
-           <div className="space-y-2">
-            <Label htmlFor="studyProgram">Programa de estudios</Label>
-             <Select name="studyProgram" defaultValue={student?.studyProgram}>
-              <SelectTrigger id="studyProgram" aria-describedby="studyProgram-error">
-                <SelectValue placeholder="Selecciona un programa" />
-              </SelectTrigger>
-              <SelectContent>
-                {studyPrograms.map(program => (
-                  <SelectItem key={program.id} value={program.name}>
-                    {program.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-             <div id="studyProgram-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.studyProgram &&
-                state.errors.studyProgram.map((error: string) => (
-                  <p className="mt-2 text-sm text-destructive" key={error}>
-                    {error}
-                  </p>
-                ))}
-            </div>
-          </div>
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="campus">Campus</Label>
-              <Select name="campus" defaultValue={student?.campus}>
-                <SelectTrigger id="campus" aria-describedby="campus-error">
-                  <SelectValue placeholder="Selecciona un campus" />
+              <Label htmlFor="level">Nivel</Label>
+              <Select name="level" value={selectedLevel} onValueChange={handleLevelChange}>
+                <SelectTrigger id="level" aria-describedby="level-error">
+                  <SelectValue placeholder="Selecciona un nivel" />
                 </SelectTrigger>
                 <SelectContent>
-                  {campuses.map(campus => (
-                    <SelectItem key={campus.id} value={campus.name}>
-                      {campus.name}
+                  {levels.map(level => (
+                    <SelectItem key={level.id} value={level.name}>
+                      {level.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <div id="campus-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.campus &&
-                  state.errors.campus.map((error: string) => (
+              <div id="level-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.level &&
+                  state.errors.level.map((error: string) => (
                     <p className="mt-2 text-sm text-destructive" key={error}>
                       {error}
                     </p>
@@ -152,22 +142,45 @@ export function StudentForm({
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="academicPeriod">Periodo académico</Label>
-              <Select name="academicPeriod" defaultValue={student?.academicPeriod}>
-                <SelectTrigger id="academicPeriod" aria-describedby="academicPeriod-error">
-                  <SelectValue placeholder="Selecciona un periodo" />
+              <Label htmlFor="grade">Grado</Label>
+              <Select name="grade" defaultValue={student?.grade} disabled={!selectedLevel}>
+                <SelectTrigger id="grade" aria-describedby="grade-error">
+                  <SelectValue placeholder={!selectedLevel ? "Primero selecciona un nivel" : "Selecciona un grado"} />
                 </SelectTrigger>
                 <SelectContent>
-                  {academicPeriods.map(period => (
-                    <SelectItem key={period.id} value={period.name}>
-                      {period.name}
+                  {availableGrades.map(grade => (
+                    <SelectItem key={grade.id} value={grade.name}>
+                      {grade.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <div id="academicPeriod-error" aria-live="polite" aria-atomic="true">
-                {state.errors?.academicPeriod &&
-                  state.errors.academicPeriod.map((error: string) => (
+              <div id="grade-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.grade &&
+                  state.errors.grade.map((error: string) => (
+                    <p className="mt-2 text-sm text-destructive" key={error}>
+                      {error}
+                    </p>
+                  ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="section">Sección</Label>
+              <Select name="section" defaultValue={student?.section}>
+                <SelectTrigger id="section" aria-describedby="section-error">
+                  <SelectValue placeholder="Selecciona una sección" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sections.map(section => (
+                    <SelectItem key={section.id} value={section.name}>
+                      {section.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div id="section-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.section &&
+                  state.errors.section.map((error: string) => (
                     <p className="mt-2 text-sm text-destructive" key={error}>
                       {error}
                     </p>
@@ -183,7 +196,16 @@ export function StudentForm({
               placeholder="p. ej. Av. Arequipa 1499, Lince"
               defaultValue={student?.address}
               rows={3}
+              aria-describedby="address-error"
             />
+            <div id="address-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.address &&
+                state.errors.address.map((error: string) => (
+                  <p className="mt-2 text-sm text-destructive" key={error}>
+                    {error}
+                  </p>
+                ))}
+            </div>
           </div>
           {state.message && (
             <Alert variant="destructive">

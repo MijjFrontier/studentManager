@@ -5,22 +5,22 @@ export type Student = {
   email: string;
   phone: string;
   address: string;
-  studyProgram: string;
-  campus: string;
-  academicPeriod: string;
+  level: string;
+  grade: string;
+  section: string;
 };
 
-export type Campus = {
+export type Level = {
   id: string;
   name: string;
 };
 
-export type StudyProgram = {
+export type Grade = {
   id: string;
   name: string;
 };
 
-export type AcademicPeriod = {
+export type Section = {
   id: string;
   name: string;
 };

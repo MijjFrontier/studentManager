@@ -15,9 +15,9 @@ const StudentFormSchema = z.object({
   email: z.string().email({ message: 'Por favor, introduce una dirección de correo electrónico válida.' }),
   phone: z.string().regex(/^\d{9}$/, { message: 'El número de teléfono debe tener 9 dígitos.' }),
   address: z.string().optional(),
-  studyProgram: z.string().min(2, { message: 'El programa de estudios es requerido.' }),
-  campus: z.string().min(2, { message: 'El campus es requerido.' }),
-  academicPeriod: z.string().min(2, { message: 'El periodo académico es requerido.' }),
+  level: z.string({ required_error: 'El nivel es requerido.' }).min(1, { message: 'El nivel es requerido.' }),
+  grade: z.string({ required_error: 'El grado es requerido.' }).min(1, { message: 'El grado es requerido.' }),
+  section: z.string({ required_error: 'La sección es requerida.' }).min(1, { message: 'La sección es requerida.' }),
 });
 
 export type State = {
@@ -26,9 +26,9 @@ export type State = {
     email?: string[];
     phone?: string[];
     address?: string[];
-    studyProgram?: string[];
-    campus?: string[];
-    academicPeriod?: string[];
+    level?: string[];
+    grade?: string[];
+    section?: string[];
   };
   message?: string | null;
   success?: boolean;

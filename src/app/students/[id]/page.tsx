@@ -20,6 +20,9 @@ import {
   Book,
   Building,
   Calendar,
+  Users,
+  GraduationCap,
+  Home,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { deleteStudent } from '@/lib/actions';
@@ -49,7 +52,7 @@ function DeleteButton({ id }: { id: string }) {
       <AlertDialogContent>
         <form action={deleteStudentWithId}>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Estás absolutely seguro?</AlertDialogTitle>
+            <AlertDialogTitle>¿Estás absolutamente seguro?</AlertDialogTitle>
             <AlertDialogDescription>
               Esta acción no se puede deshacer. Esto eliminará permanentemente a
               este estudiante y eliminará sus datos de nuestros servidores.
@@ -89,27 +92,27 @@ function StudentProfile({ student }: { student: Student }) {
               </h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
-                  <Book className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
+                  <Users className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
                   <div>
-                    <p className="font-medium">Programa de estudios</p>
+                    <p className="font-medium">Nivel</p>
                     <p className="text-muted-foreground">
-                      {student.studyProgram}
+                      {student.level}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <Building className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
+                  <GraduationCap className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
                   <div>
-                    <p className="font-medium">Campus</p>
-                    <p className="text-muted-foreground">{student.campus}</p>
+                    <p className="font-medium">Grado</p>
+                    <p className="text-muted-foreground">{student.grade}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <Calendar className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
+                  <Home className="h-5 w-5 text-muted-foreground mt-1 shrink-0" />
                   <div>
-                    <p className="font-medium">Periodo académico</p>
+                    <p className="font-medium">Sección</p>
                     <p className="text-muted-foreground">
-                      {student.academicPeriod}
+                      {student.section}
                     </p>
                   </div>
                 </div>

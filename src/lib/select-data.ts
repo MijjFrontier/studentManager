@@ -1,44 +1,64 @@
-import type { Campus, StudyProgram, AcademicPeriod } from './types';
+import type { Level, Grade, Section } from './types';
 
-const campuses: Campus[] = [
-    { id: 'campus-1', name: 'Sede Central' },
-    { id: 'campus-2', name: 'Campus Norte' },
-    { id: 'campus-3', name: 'Campus Sur' },
-    { id: 'campus-4', name: 'Sede Virtual 100%' },
+const levels: Level[] = [
+    { id: 'level-1', name: 'Primaria' },
+    { id: 'level-2', name: 'Secundaria' },
 ];
 
-const studyPrograms: StudyProgram[] = [
-    { id: 'prog-1', name: 'Desarrollo de Sistemas Front-end y Back-end' },
-    { id: 'prog-2', name: 'Ingeniería de Software con IA' },
-    { id: 'prog-3', name: 'Diseño Gráfico Digital' },
-    { id: 'prog-4', name: 'Administración de Empresas' },
-    { id: 'prog-5', name: 'Marketing Digital' },
+export const grades = {
+    primaria: [
+        { id: 'p-grade-1', name: 'Primer Grado' },
+        { id: 'p-grade-2', name: 'Segundo Grado' },
+        { id: 'p-grade-3', name: 'Tercer Grado' },
+        { id: 'p-grade-4', name: 'Cuarto Grado' },
+        { id: 'p-grade-5', name: 'Quinto Grado' },
+        { id: 'p-grade-6', name: 'Sexto Grado' },
+    ],
+    secundaria: [
+        { id: 's-grade-1', name: 'Primer Grado' },
+        { id:s-grade-2', name: 'Segundo Grado' },
+        { id:s-grade-3', name: 'Tercer Grado' },
+        { id:s-grade-4', name: 'Cuarto Grado' },
+        { id:s-grade-5', name: 'Quinto Grado' },
+    ]
+};
+
+const sections: Section[] = [
+    { id: 'section-a', name: 'A' },
+    { id: 'section-b', name: 'B' },
+    { id: 'section-c', name: 'C' },
+    { id: 'section-d', name: 'D' },
+    { id: 'section-e', name: 'E' },
+    { id: 'section-f', name: 'F' },
 ];
 
-const academicPeriods: AcademicPeriod[] = [
-    { id: 'period-1', name: 'Primer Periodo Académico' },
-    { id: 'period-2', name: 'Segundo Periodo Académico' },
-    { id: 'period-3', name: 'Tercer Periodo Académico' },
-    { id: 'period-4', name: 'Cuarto Periodo Académico' },
-    { id: 'period-5', name: 'Quinto Periodo Académico' },
-    { id: 'period-6', name: 'Sexto Periodo Académico' },
-];
 
 const simulateLatency = (ms: number = 100) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 
-export async function getCampuses(): Promise<Campus[]> {
+export async function getLevels(): Promise<Level[]> {
     await simulateLatency();
-    return campuses;
+    return levels;
 }
 
-export async function getStudyPrograms(): Promise<StudyProgram[]> {
-    await simulateLatency();
-    return studyPrograms;
+export function getGradesByLevel(level: string): Grade[] {
+    if (level.toLowerCase() === 'primaria') {
+        return grades.primaria;
+    }
+    if (level.toLowerCase() === 'secundaria') {
+        return grades.secundaria;
+    }
+    return [];
 }
 
-export async function getAcademicPeriods(): Promise<AcademicPeriod[]> {
+export async function getAllGrades(): Promise<Grade[]> {
     await simulateLatency();
-    return academicPeriods;
+    return [...grades.primaria, ...grades.secundaria];
+}
+
+
+export async function getSections(): Promise<Section[]> {
+    await simulateLatency();
+    return sections;
 }
