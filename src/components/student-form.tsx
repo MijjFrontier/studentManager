@@ -19,12 +19,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { grades as allGrades, getGradesByLevel } from '@/lib/select-data';
+import { getGradesByLevel } from '@/lib/select-data';
 
 export function StudentForm({ 
   student,
   levels,
-  sections
+  sections,
 }: { 
   student?: Student | null,
   levels: Level[],
@@ -48,10 +48,15 @@ export function StudentForm({
   const handleLevelChange = (levelName: string) => {
     setSelectedLevel(levelName);
     setAvailableGrades(getGradesByLevel(levelName));
+    // We need to manually clear the grade selection if it's not part of the new available grades
+    // However, the form state will handle this on submit. For UX, we just update the list.
   };
+  
+  // Use a key on the form to reset its state when the student changes
+  const formKey = student?.id || 'new';
 
   return (
-    <form action={dispatch} key={student?.id || 'new'}>
+    <form action={dispatch} key={formKey}>
       <Card className="w-full max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>{student ? 'Editar Estudiante' : 'Registrar Nuevo Estudiante'}</CardTitle>
@@ -120,7 +125,7 @@ export function StudentForm({
            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <Label htmlFor="level">Nivel</Label>
-              <Select name="level" value={selectedLevel} onValueChange={handleLevelChange}>
+              <Select name="level" defaultValue={student?.level} onValueChange={handleLevelChange}>
                 <SelectTrigger id="level" aria-describedby="level-error">
                   <SelectValue placeholder="Selecciona un nivel" />
                 </SelectTrigger>
@@ -143,12 +148,12 @@ export function StudentForm({
             </div>
             <div className="space-y-2">
               <Label htmlFor="grade">Grado</Label>
-              <Select name="grade" defaultValue={student?.grade} disabled={!selectedLevel}>
+              <Select name="grade" defaultValue={student?.grade} disabled={!selectedLevel && !student?.level}>
                 <SelectTrigger id="grade" aria-describedby="grade-error">
-                  <SelectValue placeholder={!selectedLevel ? "Primero selecciona un nivel" : "Selecciona un grado"} />
+                  <SelectValue placeholder={!selectedLevel && !student?.level ? "Primero selecciona un nivel" : "Selecciona un grado"} />
                 </SelectTrigger>
                 <SelectContent>
-                  {availableGrades.map(grade => (
+                  {(availableGrades.length > 0 ? availableGrades : getGradesByLevel(student?.level || '')).map(grade => (
                     <SelectItem key={grade.id} value={grade.name}>
                       {grade.name}
                     </SelectItem>
