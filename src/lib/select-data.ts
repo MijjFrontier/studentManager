@@ -16,10 +16,10 @@ export const grades = {
     ],
     secundaria: [
         { id: 's-grade-1', name: 'Primer Grado' },
-        { id:s-grade-2', name: 'Segundo Grado' },
-        { id:s-grade-3', name: 'Tercer Grado' },
-        { id:s-grade-4', name: 'Cuarto Grado' },
-        { id:s-grade-5', name: 'Quinto Grado' },
+        { id: 's-grade-2', name: 'Segundo Grado' },
+        { id: 's-grade-3', name: 'Tercer Grado' },
+        { id: 's-grade-4', name: 'Cuarto Grado' },
+        { id: 's-grade-5', name: 'Quinto Grado' },
     ]
 };
 
