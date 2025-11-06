@@ -8,7 +8,7 @@ import {
   updateStudent as updateStudentData,
   deleteStudentById,
 } from '@/lib/data';
-import { cookies } from 'next/headers';
+import type { Student } from './types';
 
 const StudentFormSchema = z.object({
   name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
@@ -31,18 +31,26 @@ export type State = {
     section?: string[];
   };
   message?: string | null;
-  success?: boolean;
-  redirectPath?: string;
+  data?: {
+    name: string;
+    email: string;
+    phone: string;
+    address?: string;
+    level: string;
+    grade: string;
+    section: string;
+  }
 };
 
-export async function createStudent(prevState: State, formData: FormData) {
-  const validatedFields = StudentFormSchema.safeParse(Object.fromEntries(formData.entries()));
+export async function createStudent(prevState: State, formData: FormData): Promise<State> {
+  const rawFormData = Object.fromEntries(formData.entries());
+  const validatedFields = StudentFormSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Error al crear el estudiante. Por favor, comprueba los campos.',
-      success: false,
+      data: rawFormData as State['data'],
     };
   }
   
@@ -54,21 +62,22 @@ export async function createStudent(prevState: State, formData: FormData) {
   try {
     await addStudent(dataToSave);
   } catch (error) {
-    return { message: 'Error de base de datos: No se pudo crear el estudiante.', success: false };
+    return { message: 'Error de base de datos: No se pudo crear el estudiante.', data: rawFormData as State['data'] };
   }
 
   revalidatePath('/');
   redirect(`/?success_message=${encodeURIComponent('Estudiante creado con éxito.')}`);
 }
 
-export async function updateStudent(id: string, prevState: State, formData: FormData) {
-  const validatedFields = StudentFormSchema.safeParse(Object.fromEntries(formData.entries()));
+export async function updateStudent(id: string, prevState: State, formData: FormData): Promise<State> {
+  const rawFormData = Object.fromEntries(formData.entries());
+  const validatedFields = StudentFormSchema.safeParse(rawFormData);
 
    if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Error al actualizar el estudiante. Por favor, comprueba los campos.',
-      success: false,
+      data: rawFormData as State['data'],
     };
   }
   
@@ -80,7 +89,7 @@ export async function updateStudent(id: string, prevState: State, formData: Form
   try {
     await updateStudentData(id, dataToSave);
   } catch (e) {
-    return { message: 'Error de base de datos: No se pudo actualizar el estudiante.', success: false };
+    return { message: 'Error de base de datos: No se pudo actualizar el estudiante.', data: rawFormData as State['data'] };
   }
 
   const redirectPath = `/students/${id}`;

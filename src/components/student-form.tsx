@@ -36,23 +36,21 @@ export function StudentForm({
     : createStudent;
   const [state, dispatch] = useActionState(action, initialState);
 
-  const [selectedLevel, setSelectedLevel] = useState(student?.level || '');
+  const defaultLevel = student?.level || state.data?.level || '';
+  const [selectedLevel, setSelectedLevel] = useState(defaultLevel);
   const [availableGrades, setAvailableGrades] = useState<Grade[]>([]);
 
   useEffect(() => {
-    if (student?.level) {
-      setAvailableGrades(getGradesByLevel(student.level));
+    if (defaultLevel) {
+      setAvailableGrades(getGradesByLevel(defaultLevel));
     }
-  }, [student?.level]);
+  }, [defaultLevel]);
 
   const handleLevelChange = (levelName: string) => {
     setSelectedLevel(levelName);
     setAvailableGrades(getGradesByLevel(levelName));
-    // We need to manually clear the grade selection if it's not part of the new available grades
-    // However, the form state will handle this on submit. For UX, we just update the list.
   };
   
-  // Use a key on the form to reset its state when the student changes
   const formKey = student?.id || 'new';
 
   return (
@@ -72,7 +70,7 @@ export function StudentForm({
                 id="name"
                 name="name"
                 placeholder="p. ej. Pepe Ramirez"
-                defaultValue={student?.name}
+                defaultValue={state.data?.name ?? student?.name}
                 aria-describedby="name-error"
               />
               <div id="name-error" aria-live="polite" aria-atomic="true">
@@ -91,7 +89,7 @@ export function StudentForm({
                 name="email"
                 type="email"
                 placeholder="p. ej. pepe@gmail.com"
-                defaultValue={student?.email}
+                defaultValue={state.data?.email ?? student?.email}
                 aria-describedby="email-error"
               />
               <div id="email-error" aria-live="polite" aria-atomic="true">
@@ -110,7 +108,7 @@ export function StudentForm({
               id="phone"
               name="phone"
               placeholder="p. ej. 987654321"
-              defaultValue={student?.phone}
+              defaultValue={state.data?.phone ?? student?.phone}
               aria-describedby="phone-error"
             />
              <div id="phone-error" aria-live="polite" aria-atomic="true">
@@ -125,7 +123,7 @@ export function StudentForm({
            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <Label htmlFor="level">Nivel</Label>
-              <Select name="level" defaultValue={student?.level} onValueChange={handleLevelChange}>
+              <Select name="level" defaultValue={state.data?.level ?? student?.level} onValueChange={handleLevelChange}>
                 <SelectTrigger id="level" aria-describedby="level-error">
                   <SelectValue placeholder="Selecciona un nivel" />
                 </SelectTrigger>
@@ -148,7 +146,7 @@ export function StudentForm({
             </div>
             <div className="space-y-2">
               <Label htmlFor="grade">Grado</Label>
-              <Select name="grade" defaultValue={student?.grade} disabled={!selectedLevel && !student?.level}>
+              <Select name="grade" defaultValue={state.data?.grade ?? student?.grade} disabled={!selectedLevel && !student?.level}>
                 <SelectTrigger id="grade" aria-describedby="grade-error">
                   <SelectValue placeholder={!selectedLevel && !student?.level ? "Primero selecciona un nivel" : "Selecciona un grado"} />
                 </SelectTrigger>
@@ -171,7 +169,7 @@ export function StudentForm({
             </div>
             <div className="space-y-2">
               <Label htmlFor="section">Sección</Label>
-              <Select name="section" defaultValue={student?.section}>
+              <Select name="section" defaultValue={state.data?.section ?? student?.section}>
                 <SelectTrigger id="section" aria-describedby="section-error">
                   <SelectValue placeholder="Selecciona una sección" />
                 </SelectTrigger>
@@ -199,7 +197,7 @@ export function StudentForm({
               id="address"
               name="address"
               placeholder="p. ej. Av. Arequipa 1499, Lince"
-              defaultValue={student?.address}
+              defaultValue={state.data?.address ?? student?.address}
               rows={3}
               aria-describedby="address-error"
             />
@@ -212,7 +210,7 @@ export function StudentForm({
                 ))}
             </div>
           </div>
-          {state.message && (
+          {state.message && !state.errors && (
             <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Error</AlertTitle>
