@@ -37,7 +37,10 @@ export function StudentForm({
   const [state, dispatch] = useActionState(action, initialState);
 
   const defaultLevel = student?.level || state.data?.level || '';
+  const defaultGrade = student?.grade || state.data?.grade || '';
+  
   const [selectedLevel, setSelectedLevel] = useState(defaultLevel);
+  const [selectedGrade, setSelectedGrade] = useState(defaultGrade);
   const [availableGrades, setAvailableGrades] = useState<Grade[]>([]);
 
   useEffect(() => {
@@ -48,7 +51,12 @@ export function StudentForm({
 
   const handleLevelChange = (levelName: string) => {
     setSelectedLevel(levelName);
+    setSelectedGrade(''); // Reset grade when level changes
     setAvailableGrades(getGradesByLevel(levelName));
+  };
+
+  const handleGradeChange = (gradeName: string) => {
+    setSelectedGrade(gradeName);
   };
   
   const formKey = student?.id || 'new';
@@ -123,7 +131,7 @@ export function StudentForm({
            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <Label htmlFor="level">Nivel</Label>
-              <Select name="level" defaultValue={state.data?.level ?? student?.level} onValueChange={handleLevelChange}>
+              <Select name="level" defaultValue={selectedLevel} onValueChange={handleLevelChange}>
                 <SelectTrigger id="level" aria-describedby="level-error">
                   <SelectValue placeholder="Selecciona un nivel" />
                 </SelectTrigger>
@@ -146,12 +154,17 @@ export function StudentForm({
             </div>
             <div className="space-y-2">
               <Label htmlFor="grade">Grado</Label>
-              <Select name="grade" defaultValue={state.data?.grade ?? student?.grade} disabled={!selectedLevel && !student?.level}>
+              <Select 
+                name="grade" 
+                value={selectedGrade}
+                onValueChange={handleGradeChange}
+                disabled={!selectedLevel}
+              >
                 <SelectTrigger id="grade" aria-describedby="grade-error">
-                  <SelectValue placeholder={!selectedLevel && !student?.level ? "Primero selecciona un nivel" : "Selecciona un grado"} />
+                  <SelectValue placeholder={!selectedLevel ? "Primero selecciona un nivel" : "Selecciona un grado"} />
                 </SelectTrigger>
                 <SelectContent>
-                  {(availableGrades.length > 0 ? availableGrades : getGradesByLevel(student?.level || '')).map(grade => (
+                  {availableGrades.map(grade => (
                     <SelectItem key={grade.id} value={grade.name}>
                       {grade.name}
                     </SelectItem>
@@ -169,9 +182,13 @@ export function StudentForm({
             </div>
             <div className="space-y-2">
               <Label htmlFor="section">Sección</Label>
-              <Select name="section" defaultValue={state.data?.section ?? student?.section}>
+              <Select 
+                name="section" 
+                defaultValue={state.data?.section ?? student?.section} 
+                disabled={!selectedGrade}
+              >
                 <SelectTrigger id="section" aria-describedby="section-error">
-                  <SelectValue placeholder="Selecciona una sección" />
+                  <SelectValue placeholder={!selectedGrade ? "Primero selecciona un grado" : "Selecciona una sección"} />
                 </SelectTrigger>
                 <SelectContent>
                   {sections.map(section => (
