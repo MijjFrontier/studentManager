@@ -1,8 +1,7 @@
 'use client';
 
 import type { Student, Course } from '@/lib/types';
-import { useActionState } from 'react-dom';
-import { useFormStatus } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 import { createNote, type NoteState } from '@/lib/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -27,7 +26,7 @@ export function NoteForm({
     courses: Course[];
 }) {
     const initialState: NoteState = { message: null, errors: {} };
-    const [state, dispatch] = useActionState(createNote, initialState);
+    const [state, dispatch] = useFormState(createNote, initialState);
 
     return (
         <form action={dispatch}>
