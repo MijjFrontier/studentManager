@@ -1,7 +1,7 @@
 'use client';
 
 import type { Student, Course } from '@/lib/types';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useTransition } from 'react';
 import { createNote, type NoteState } from '@/lib/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useFormStatus } from 'react-dom';
 
 export function NoteForm({
     student,
@@ -26,7 +27,7 @@ export function NoteForm({
     courses: Course[];
 }) {
     const initialState: NoteState = { message: null, errors: {} };
-    const [state, dispatch] = useFormState(createNote, initialState);
+    const [state, dispatch] = useActionState(createNote, initialState);
 
     return (
         <form action={dispatch}>

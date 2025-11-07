@@ -1,8 +1,8 @@
 'use client';
 
 import type { Student, Level, Grade, Section } from '@/lib/types';
-import { useState, useEffect } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useState, useEffect, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { createStudent, updateStudent, type State } from '@/lib/actions';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -34,7 +34,7 @@ export function StudentForm({
   const action = student
     ? updateStudent.bind(null, student.id)
     : createStudent;
-  const [state, dispatch] = useFormState(action, initialState);
+  const [state, dispatch] = useActionState(action, initialState);
 
   const defaultLevel = student?.level || state.data?.level || '';
   const [selectedLevel, setSelectedLevel] = useState(defaultLevel);
