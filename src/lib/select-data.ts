@@ -1,4 +1,4 @@
-import type { Level, Grade, Section } from './types';
+import type { Level, Grade, Section, Course } from './types';
 
 const levels: Level[] = [
     { id: 'level-1', name: 'Primaria' },
@@ -32,6 +32,20 @@ const sections: Section[] = [
     { id: 'section-f', name: 'F' },
 ];
 
+const courses: Course[] = [
+    { id: 'course-1', name: 'Matemáticas' },
+    { id: 'course-2', name: 'Comunicación' },
+    { id: 'course-3', name: 'Ciencia y Tecnología' },
+    { id: 'course-4', name: 'Personal Social' },
+    { id: 'course-5', name: 'Educación Física' },
+    { id: 'course-6', name: 'Arte y Cultura' },
+    { id: 'course-7', name: 'Inglés' },
+    { id: 'course-8', name: 'Religión' },
+    { id: 'course-9', name: 'Ciencias Sociales' },
+    { id: 'course-10', name: 'Desarrollo Personal, Ciudadanía y Cívica' },
+    { id: 'course-11', name: 'Educación para el Trabajo' },
+];
+
 
 const simulateLatency = (ms: number = 100) =>
   new Promise((resolve) => setTimeout(resolve, ms));
@@ -57,8 +71,12 @@ export async function getAllGrades(): Promise<Grade[]> {
     return [...grades.primaria, ...grades.secundaria];
 }
 
-
 export async function getSections(): Promise<Section[]> {
     await simulateLatency();
     return sections;
+}
+
+export async function getCourses(): Promise<Course[]> {
+    await simulateLatency();
+    return courses;
 }

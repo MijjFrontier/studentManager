@@ -1,6 +1,6 @@
 'use server';
 
-import { getStudentById } from '@/lib/data';
+import { getStudentById, getNotesByStudentId } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import {
   Card,
@@ -17,12 +17,10 @@ import {
   Phone,
   MapPin,
   Trash2,
-  Book,
-  Building,
-  Calendar,
   Users,
   GraduationCap,
   Home,
+  PlusCircle,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { deleteStudent } from '@/lib/actions';
@@ -38,6 +36,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import type { Student } from '@/lib/types';
+import NotesList from '@/components/notes-list';
 
 function DeleteButton({ id }: { id: string }) {
   const deleteStudentWithId = deleteStudent.bind(null, id);
@@ -72,16 +71,24 @@ function DeleteButton({ id }: { id: string }) {
 
 function StudentProfile({ student }: { student: Student }) {
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto space-y-8">
       <Card>
-        <CardHeader className="flex flex-col items-center text-center space-y-4 p-6 sm:p-8">
-          <div>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 p-6 sm:p-8">
+          <div className="space-y-2">
             <CardTitle className="text-3xl font-bold font-headline">
               {student.name}
             </CardTitle>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-muted-foreground">
               <Badge variant="secondary">{student.studentId}</Badge>
             </p>
+          </div>
+           <div className="flex items-center gap-2">
+             <Button asChild>
+              <Link href={`/students/${student.id}/notes/new`} className="gap-2">
+                <PlusCircle className="h-4 w-4" />
+                Añadir Nota
+              </Link>
+            </Button>
           </div>
         </CardHeader>
         <CardContent className="p-6 sm:p-8 border-t">
@@ -165,6 +172,8 @@ function StudentProfile({ student }: { student: Student }) {
           </Button>
         </CardFooter>
       </Card>
+
+      <NotesList studentId={student.id} />
     </div>
   );
 }

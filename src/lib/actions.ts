@@ -7,6 +7,7 @@ import {
   addStudent,
   updateStudent as updateStudentData,
   deleteStudentById,
+  addNote,
 } from '@/lib/data';
 import type { Student } from './types';
 
@@ -106,4 +107,47 @@ export async function deleteStudent(id: string) {
   } catch (e) {
     return { message: 'Error de base de datos: No se pudo eliminar el estudiante.' };
   }
+}
+
+// --- Notes Actions ---
+
+const NoteFormSchema = z.object({
+    studentId: z.string(),
+    course: z.string({ required_error: 'La materia es requerida.' }).min(1, { message: 'La materia es requerida.' }),
+    score: z.coerce.number().min(0, { message: 'La nota debe ser como mínimo 0.' }).max(20, { message: 'La nota debe ser como máximo 20.' }),
+});
+
+
+export type NoteState = {
+    errors?: {
+        course?: string[];
+        score?: string[];
+    };
+    message?: string | null;
+}
+
+export async function createNote(prevState: NoteState, formData: FormData) {
+    const validatedFields = NoteFormSchema.safeParse({
+        studentId: formData.get('studentId'),
+        course: formData.get('course'),
+        score: formData.get('score'),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Error al registrar la nota. Por favor, comprueba los campos.',
+        };
+    }
+
+    try {
+        await addNote(validatedFields.data);
+    } catch (e) {
+        return { message: 'Error de base de datos: No se pudo registrar la nota.' };
+    }
+    
+    const studentId = validatedFields.data.studentId;
+    const redirectPath = `/students/${studentId}`;
+    revalidatePath(redirectPath);
+    redirect(`${redirectPath}?success_message=${encodeURIComponent('Nota registrada con éxito.')}`);
 }

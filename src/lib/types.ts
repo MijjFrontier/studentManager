@@ -24,3 +24,16 @@ export type Section = {
   id: string;
   name: string;
 };
+
+export type Note = {
+  id: string;
+  studentId: string;
+  course: string;
+  score: number;
+  date: string;
+};
+
+export type Course = {
+  id: string;
+  name: string;
+};

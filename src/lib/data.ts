@@ -1,12 +1,18 @@
-import type { Student } from './types';
+import type { Student, Note } from './types';
 
 // To persist data across hot reloads in development
 const globalForStudents = global as unknown as { students?: Student[] };
+const globalForNotes = global as unknown as { notes?: Note[] };
 
 // Initialize students array only if it's not already defined
 if (!globalForStudents.students) {
     globalForStudents.students = [];
 }
+
+if (!globalForNotes.notes) {
+    globalForNotes.notes = [];
+}
+
 
 const ITEMS_PER_PAGE = 20;
 
@@ -108,4 +114,26 @@ export async function deleteStudentById(id: string) {
         throw new Error('Student not found');
     }
     return { success: true };
+}
+
+
+// --- Notes Data ---
+export async function getNotesByStudentId(studentId: string): Promise<Note[]> {
+    await simulateLatency();
+    return (globalForNotes.notes || []).filter(note => note.studentId === studentId)
+                                      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
+export async function addNote(noteData: Omit<Note, 'id' | 'date'>) {
+    await simulateLatency();
+    if (!globalForNotes.notes) {
+        globalForNotes.notes = [];
+    }
+    const newNote: Note = {
+        ...noteData,
+        id: crypto.randomUUID(),
+        date: new Date().toISOString(),
+    };
+    globalForNotes.notes.unshift(newNote);
+    return newNote;
 }
