@@ -47,12 +47,7 @@ const courses: Course[] = [
 ];
 
 
-const simulateLatency = (ms: number = 100) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
-
-
 export async function getLevels(): Promise<Level[]> {
-    await simulateLatency();
     return levels;
 }
 
@@ -67,16 +62,13 @@ export function getGradesByLevel(level: string): Grade[] {
 }
 
 export async function getAllGrades(): Promise<Grade[]> {
-    await simulateLatency();
     return [...grades.primaria, ...grades.secundaria];
 }
 
 export async function getSections(): Promise<Section[]> {
-    await simulateLatency();
     return sections;
 }
 
 export async function getCourses(): Promise<Course[]> {
-    await simulateLatency();
     return courses;
 }
