@@ -1,10 +1,11 @@
-import type { Student, Note } from './types';
+import type { Student, Note, Teacher } from './types';
 
 // To persist data across hot reloads in development
 const globalForStudents = global as unknown as { students?: Student[] };
 const globalForNotes = global as unknown as { notes?: Note[] };
+const globalForTeachers = global as unknown as { teachers?: Teacher[] };
 
-// Initialize students array only if it's not already defined
+// Initialize data arrays only if they're not already defined
 if (!globalForStudents.students) {
     globalForStudents.students = [];
 }
@@ -13,11 +14,17 @@ if (!globalForNotes.notes) {
     globalForNotes.notes = [];
 }
 
+if (!globalForTeachers.teachers) {
+    globalForTeachers.teachers = [];
+}
+
 
 const ITEMS_PER_PAGE = 20;
 
 const simulateLatency = (ms: number = 500) =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
+// --- Student Data ---
 
 export async function getStudents(options: { query?: string; page?: number } = {}) {
   await simulateLatency();
@@ -116,7 +123,6 @@ export async function deleteStudentById(id: string) {
     return { success: true };
 }
 
-
 // --- Notes Data ---
 export async function getNotesByStudentId(studentId: string): Promise<Note[]> {
     await simulateLatency();
@@ -136,4 +142,64 @@ export async function addNote(noteData: Omit<Note, 'id' | 'date'>) {
     };
     globalForNotes.notes.unshift(newNote);
     return newNote;
+}
+
+// --- Teacher Data ---
+
+export async function addTeacher(teacherData: Omit<Teacher, 'id' | 'teacherId'>) {
+    await simulateLatency();
+    
+    if (!globalForTeachers.teachers) {
+        globalForTeachers.teachers = [];
+    }
+
+    const newId = crypto.randomUUID();
+    const newTeacherId = `T${100 + globalForTeachers.teachers.length + 1}`;
+    
+    const newTeacher: Teacher = {
+        ...teacherData,
+        id: newId,
+        teacherId: newTeacherId,
+    };
+    globalForTeachers.teachers.unshift(newTeacher);
+    return newTeacher;
+}
+
+export async function getTeachers(options: { query?: string; page?: number } = {}) {
+    await simulateLatency();
+    const { query, page = 1 } = options;
+
+    let filteredTeachers = globalForTeachers.teachers || [];
+
+    if (query) {
+        const lowercasedQuery = query.toLowerCase();
+        filteredTeachers = filteredTeachers.filter(
+            (teacher) =>
+                teacher.name.toLowerCase().includes(lowercasedQuery) ||
+                teacher.email.toLowerCase().includes(lowercasedQuery) ||
+                teacher.teacherId.toLowerCase().includes(lowercasedQuery)
+        );
+    }
+
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+
+    return filteredTeachers.slice(startIndex, endIndex);
+}
+
+export async function getTotalTeacherPages(query?: string) {
+    await simulateLatency(100);
+
+    let filteredTeachers = globalForTeachers.teachers || [];
+    if (query) {
+        const lowercasedQuery = query.toLowerCase();
+        filteredTeachers = filteredTeachers.filter(
+            (teacher) =>
+                teacher.name.toLowerCase().includes(lowercasedQuery) ||
+                teacher.email.toLowerCase().includes(lowercasedQuery) ||
+                teacher.teacherId.toLowerCase().includes(lowercasedQuery)
+        );
+    }
+
+    return Math.ceil(filteredTeachers.length / ITEMS_PER_PAGE);
 }

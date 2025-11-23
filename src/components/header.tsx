@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { GraduationCap, UserPlus } from 'lucide-react';
+import { GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function Header() {
@@ -15,12 +15,6 @@ export function Header() {
               Gestor de Estudiantes
             </span>
           </Link>
-          <Button asChild className="gap-2">
-            <Link href="/students/new">
-              <UserPlus />
-              <span className="hidden sm:inline">Añadir Estudiante</span>
-            </Link>
-          </Button>
         </div>
       </div>
     </header>

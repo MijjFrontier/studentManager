@@ -8,8 +8,10 @@ import {
   updateStudent as updateStudentData,
   deleteStudentById,
   addNote,
+  addTeacher,
 } from '@/lib/data';
-import type { Student } from './types';
+
+// --- Student Actions ---
 
 const StudentFormSchema = z.object({
   name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
@@ -150,4 +152,48 @@ export async function createNote(prevState: NoteState, formData: FormData) {
     const redirectPath = `/students/${studentId}`;
     revalidatePath(redirectPath);
     redirect(`${redirectPath}?success_message=${encodeURIComponent('Nota registrada con éxito.')}`);
+}
+
+
+// --- Teacher Actions ---
+const TeacherFormSchema = z.object({
+  name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
+  email: z.string().email({ message: 'Por favor, introduce una dirección de correo electrónico válida.' }),
+  phone: z.string().regex(/^\d{9}$/, { message: 'El número de teléfono debe tener 9 dígitos.' }),
+});
+
+export type TeacherState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
+    phone?: string[];
+  };
+  message?: string | null;
+  data?: {
+    name: string;
+    email: string;
+    phone: string;
+  }
+};
+
+export async function createTeacher(prevState: TeacherState, formData: FormData): Promise<TeacherState> {
+  const rawFormData = Object.fromEntries(formData.entries());
+  const validatedFields = TeacherFormSchema.safeParse(rawFormData);
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Error al crear el profesor. Por favor, comprueba los campos.',
+      data: rawFormData as TeacherState['data'],
+    };
+  }
+
+  try {
+    await addTeacher(validatedFields.data);
+  } catch (error) {
+    return { message: 'Error de base de datos: No se pudo crear el profesor.', data: rawFormData as TeacherState['data'] };
+  }
+
+  revalidatePath('/teachers');
+  redirect(`/teachers?success_message=${encodeURIComponent('Profesor creado con éxito.')}`);
 }

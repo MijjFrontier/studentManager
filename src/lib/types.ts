@@ -10,6 +10,14 @@ export type Student = {
   section: string;
 };
 
+export type Teacher = {
+  id: string; // uuid
+  teacherId: string; // human-readable id
+  name: string;
+  email: string;
+  phone: string;
+};
+
 export type Level = {
   id: string;
   name: string;
