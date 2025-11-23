@@ -38,13 +38,16 @@ type User = (Teacher | Student) & { type: 'teacher' | 'student' };
 export default function LoginPage() {
   const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState('');
   const [isAdminDialogOpen, setIsAdminDialogOpen] = useState(false);
 
   useEffect(() => {
     async function fetchUsers() {
+      setLoading(true);
       const allUsers = await getAllUsers();
       setUsers(allUsers);
+      setLoading(false);
     }
     fetchUsers();
   }, []);
@@ -119,9 +122,21 @@ export default function LoginPage() {
             <form onSubmit={handleUserLogin} className="space-y-4">
               <div className="space-y-2 text-left">
                 <Label htmlFor="user">Usuario (Profesor o Estudiante)</Label>
-                <Select onValueChange={setSelectedUser} value={selectedUser}>
+                <Select
+                  onValueChange={setSelectedUser}
+                  value={selectedUser}
+                  disabled={loading || users.length === 0}
+                >
                   <SelectTrigger id="user">
-                    <SelectValue placeholder="Selecciona tu usuario" />
+                    <SelectValue
+                      placeholder={
+                        loading
+                          ? 'Cargando usuarios...'
+                          : users.length === 0
+                            ? 'No hay usuarios registrados'
+                            : 'Selecciona tu usuario'
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {users.map((user) => (
@@ -149,7 +164,7 @@ export default function LoginPage() {
                   Para esta demo, cualquier contraseña es válida.
                 </p>
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={!selectedUser}>
                 <LogIn className="mr-2 h-4 w-4" />
                 Ingresar
               </Button>
