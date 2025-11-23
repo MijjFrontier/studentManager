@@ -203,3 +203,16 @@ export async function getTotalTeacherPages(query?: string) {
 
     return Math.ceil(filteredTeachers.length / ITEMS_PER_PAGE);
 }
+
+
+// --- Combined Data ---
+type User = (Teacher | Student) & { type: 'teacher' | 'student' };
+
+export async function getAllUsers(): Promise<User[]> {
+    await simulateLatency(200); // short latency
+    const students = (globalForStudents.students || []).map(s => ({ ...s, type: 'student' as const }));
+    const teachers = (globalForTeachers.teachers || []).map(t => ({ ...t, type: 'teacher' as const }));
+    
+    const all = [...teachers, ...students];
+    return all.sort((a, b) => a.name.localeCompare(b.name));
+}

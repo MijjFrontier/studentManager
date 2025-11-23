@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import { Header } from '@/components/header';
 import { ToasterHandler } from '@/components/toaster-handler';
 import { Suspense } from 'react';
 
@@ -30,12 +29,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased h-full" suppressHydrationWarning>
-        <div className="min-h-screen flex flex-col">
-          <Header />
-          <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {children}
-          </main>
-        </div>
         <Toaster />
         <Suspense fallback={null}>
           <ToasterHandler />
