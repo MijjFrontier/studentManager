@@ -10,13 +10,16 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, Loader2 } from 'lucide-react';
-import type { Teacher } from '@/lib/types';
+import type { Teacher, Course } from '@/lib/types';
+import { Checkbox } from './ui/checkbox';
 
 
 export function TeacherForm({ 
-  teacher
+  teacher,
+  courses,
 }: { 
   teacher?: Teacher | null,
+  courses: Course[],
 }) {
   const initialState: TeacherState = { message: null, errors: {} };
   const action = createTeacher; // For now, only create
@@ -85,6 +88,33 @@ export function TeacherForm({
              <div id="phone-error" aria-live="polite" aria-atomic="true">
               {state.errors?.phone &&
                 state.errors.phone.map((error: string) => (
+                  <p className="mt-2 text-sm text-destructive" key={error}>
+                    {error}
+                  </p>
+                ))}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <Label>Materias que enseña</Label>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 rounded-lg border p-4">
+              {courses.map((course) => (
+                <div key={course.id} className="flex items-center gap-2">
+                  <Checkbox 
+                    id={`course-${course.id}`} 
+                    name="courses" 
+                    value={course.name}
+                    defaultChecked={(state.data?.courses ?? teacher?.courses ?? []).includes(course.name)}
+                  />
+                  <Label htmlFor={`course-${course.id}`} className="font-normal">
+                    {course.name}
+                  </Label>
+                </div>
+              ))}
+            </div>
+            <div id="courses-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.courses &&
+                state.errors.courses.map((error: string) => (
                   <p className="mt-2 text-sm text-destructive" key={error}>
                     {error}
                   </p>

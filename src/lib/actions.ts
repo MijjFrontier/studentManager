@@ -160,6 +160,7 @@ const TeacherFormSchema = z.object({
   name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
   email: z.string().email({ message: 'Por favor, introduce una dirección de correo electrónico válida.' }),
   phone: z.string().regex(/^\d{9}$/, { message: 'El número de teléfono debe tener 9 dígitos.' }),
+  courses: z.array(z.string()).min(1, { message: 'Debes seleccionar al menos una materia.' }),
 });
 
 export type TeacherState = {
@@ -167,17 +168,25 @@ export type TeacherState = {
     name?: string[];
     email?: string[];
     phone?: string[];
+    courses?: string[];
   };
   message?: string | null;
   data?: {
     name: string;
     email: string;
     phone: string;
+    courses: string[];
   }
 };
 
 export async function createTeacher(prevState: TeacherState, formData: FormData): Promise<TeacherState> {
-  const rawFormData = Object.fromEntries(formData.entries());
+  const rawFormData = {
+    name: formData.get('name'),
+    email: formData.get('email'),
+    phone: formData.get('phone'),
+    courses: formData.getAll('courses'),
+  };
+  
   const validatedFields = TeacherFormSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {

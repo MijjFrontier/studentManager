@@ -16,6 +16,7 @@ export type Teacher = {
   name: string;
   email: string;
   phone: string;
+  courses: string[];
 };
 
 export type Level = {
