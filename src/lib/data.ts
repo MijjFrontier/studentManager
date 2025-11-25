@@ -205,6 +205,22 @@ export async function getTotalTeacherPages(query?: string) {
     return Math.ceil(filteredTeachers.length / ITEMS_PER_PAGE);
 }
 
+export async function deleteTeacherById(id: string) {
+    await simulateLatency();
+
+    if (!globalForTeachers.teachers) {
+        globalForTeachers.teachers = [];
+    }
+
+    const initialLength = globalForTeachers.teachers.length;
+    globalForTeachers.teachers = globalForTeachers.teachers.filter((t) => t.id !== id);
+
+    if (globalForTeachers.teachers.length === initialLength) {
+        throw new Error('Teacher not found');
+    }
+    return { success: true };
+}
+
 
 // --- Combined Data ---
 type User = (Teacher | Student) & { type: 'teacher' | 'student' };

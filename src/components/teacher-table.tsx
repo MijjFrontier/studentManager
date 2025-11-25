@@ -1,3 +1,4 @@
+
 import { getTeachers } from '@/lib/data';
 import {
   Table,
@@ -8,6 +9,61 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from './ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { MoreVertical, Edit, Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { deleteTeacher } from '@/lib/actions';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+function DeleteAction({ id }: { id: string }) {
+  const deleteTeacherWithId = deleteTeacher.bind(null, id);
+  return (
+    <AlertDialog>
+       <AlertDialogTrigger asChild>
+        <button
+          type="button"
+          className="w-full text-left relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 text-destructive"
+        >
+          <Trash2 className="mr-2 h-4 w-4" />
+          <span>Eliminar</span>
+        </button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <form action={deleteTeacherWithId}>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer. Esto eliminará permanentemente a este profesor.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction asChild>
+                <button type="submit">Continuar</button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </form>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 
 export default async function TeacherTable({
   query,
@@ -35,6 +91,7 @@ export default async function TeacherTable({
             <TableHead>Nombre</TableHead>
             <TableHead>ID de Profesor</TableHead>
             <TableHead className="hidden md:table-cell">Correo Electrónico</TableHead>
+            <TableHead className="w-[50px] text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -48,6 +105,25 @@ export default async function TeacherTable({
               </TableCell>
               <TableCell className="hidden md:table-cell">
                 {teacher.email}
+              </TableCell>
+              <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoreVertical className="h-4 w-4" />
+                        <span className="sr-only">Más acciones</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem asChild>
+                        <button className="w-full text-left" disabled> {/* Disabled for now */}
+                          <Edit className="mr-2 h-4 w-4" />
+                          <span>Editar</span>
+                        </button>
+                      </DropdownMenuItem>
+                      <DeleteAction id={teacher.id} />
+                    </DropdownMenuContent>
+                  </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}

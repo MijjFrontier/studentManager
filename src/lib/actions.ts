@@ -10,6 +10,7 @@ import {
   deleteStudentById,
   addNote,
   addTeacher,
+  deleteTeacherById,
 } from '@/lib/data';
 
 // --- Student Actions ---
@@ -32,7 +33,7 @@ const CreateStudentSchema = StudentFormSchema.refine(
     message: 'Las contraseñas no coinciden.',
     path: ['confirmPassword'],
   }
-).refine((data) => (data.password?.length ?? 0) >= 6, {
+).refine((data) => !data.password || data.password.length >= 6, {
   message: 'La contraseña debe tener al menos 6 caracteres.',
   path: ['password'],
 });
@@ -64,7 +65,14 @@ export type State = {
 
 export async function createStudent(prevState: State, formData: FormData): Promise<State> {
   const rawFormData = Object.fromEntries(formData.entries());
-  const validatedFields = CreateStudentSchema.safeParse(rawFormData);
+  
+  // Special validation for create
+  const CreateStudentWithPassword = CreateStudentSchema.refine((data) => data.password && data.password.length >= 6, {
+      message: 'La contraseña debe tener al menos 6 caracteres.',
+      path: ['password'],
+  });
+
+  const validatedFields = CreateStudentWithPassword.safeParse(rawFormData);
 
   if (!validatedFields.success) {
     return {
@@ -181,7 +189,8 @@ const TeacherFormSchema = z.object({
   name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
   email: z.string().email({ message: 'Por favor, introduce una dirección de correo electrónico válida.' }),
   phone: z.string().regex(/^\d{9}$/, { message: 'El número de teléfono debe tener 9 dígitos.' }),
-  courses: z.array(z.string()).min(1, { message: 'Debes seleccionar al menos una materia.' }),
+  courses: z.preprocess((val) => (Array.isArray(val) ? val : [val].filter(Boolean)), 
+    z.array(z.string()).min(1, { message: 'Debes seleccionar al menos una materia.' })),
   password: z.string().optional(),
   confirmPassword: z.string().optional(),
 });
@@ -192,7 +201,7 @@ const CreateTeacherSchema = TeacherFormSchema.refine(
     message: 'Las contraseñas no coinciden.',
     path: ['confirmPassword'],
   }
-).refine((data) => (data.password?.length ?? 0) >= 6, {
+).refine((data) => !data.password || data.password.length >= 6, {
   message: 'La contraseña debe tener al menos 6 caracteres.',
   path: ['password'],
 });
@@ -226,7 +235,12 @@ export async function createTeacher(prevState: TeacherState, formData: FormData)
     confirmPassword: formData.get('confirmPassword'),
   };
   
-  const validatedFields = CreateTeacherSchema.safeParse(rawFormData);
+  const CreateTeacherWithPassword = CreateTeacherSchema.refine((data) => data.password && data.password.length >= 6, {
+      message: 'La contraseña debe tener al menos 6 caracteres.',
+      path: ['password'],
+  });
+
+  const validatedFields = CreateTeacherWithPassword.safeParse(rawFormData);
 
   if (!validatedFields.success) {
     return {
@@ -247,4 +261,16 @@ export async function createTeacher(prevState: TeacherState, formData: FormData)
   revalidatePath('/teachers');
   revalidatePath('/');
   redirect(`/teachers?success_message=${encodeURIComponent('Profesor creado con éxito.')}`);
+}
+
+
+export async function deleteTeacher(id: string) {
+  try {
+    await deleteTeacherById(id);
+    revalidatePath('/');
+    revalidatePath('/teachers');
+    redirect(`/teachers?success_message=${encodeURIComponent('Profesor eliminado con éxito.')}`);
+  } catch (e) {
+    return { message: 'Error de base de datos: No se pudo eliminar el profesor.' };
+  }
 }
