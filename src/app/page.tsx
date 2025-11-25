@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { Shield, LogIn } from 'lucide-react';
+import { Shield, LogIn, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { Teacher, Student } from '@/lib/types';
 import { getAllUsers } from '@/lib/data';
@@ -62,7 +62,7 @@ export default function LoginPage() {
 
     const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
 
-    if (!user) {
+    if (!user || user.password !== password) {
       toast({
         variant: 'destructive',
         title: 'Error de autenticación',
@@ -70,9 +70,6 @@ export default function LoginPage() {
       });
       return;
     }
-    
-    // TODO: Add actual password validation here later.
-    // For now, we just check if the user exists and a password was entered.
 
     if (user.type === 'student') {
       router.push(`/students/${user.id}`);
@@ -156,9 +153,18 @@ export default function LoginPage() {
                   disabled={loading}
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={loading || !email || !password}>
-                <LogIn className="mr-2 h-4 w-4" />
-                Ingresar
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? (
+                    <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Cargando...
+                    </>
+                ) : (
+                    <>
+                        <LogIn className="mr-2 h-4 w-4" />
+                        Ingresar
+                    </>
+                )}
               </Button>
             </form>
           </CardContent>
