@@ -29,6 +29,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import Image from 'next/image';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 function DeleteAction({ id }: { id: string }) {
   const deleteStudentWithId = deleteStudent.bind(null, id);
@@ -96,7 +98,11 @@ export default async function StudentTable({
           {students.map((student) => (
             <TableRow key={student.id}>
               <TableCell className="font-medium">
-                <Link href={`/students/${student.id}`} className="hover:underline">
+                <Link href={`/students/${student.id}`} className="hover:underline flex items-center gap-3">
+                   <Avatar>
+                    <AvatarImage src={student.avatarUrl} alt={student.name} data-ai-hint="person portrait" />
+                    <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
                   {student.name}
                 </Link>
               </TableCell>

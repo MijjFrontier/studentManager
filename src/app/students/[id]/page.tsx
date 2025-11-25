@@ -37,6 +37,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import type { Student } from '@/lib/types';
 import NotesList from '@/components/notes-list';
+import Image from 'next/image';
 
 function DeleteButton({ id }: { id: string }) {
   const deleteStudentWithId = deleteStudent.bind(null, id);
@@ -73,16 +74,27 @@ function StudentProfile({ student }: { student: Student }) {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-8">
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 p-6 sm:p-8">
-          <div className="space-y-2">
-            <CardTitle className="text-3xl font-bold font-headline">
-              {student.name}
-            </CardTitle>
-            <p className="text-muted-foreground">
-              <Badge variant="secondary">{student.studentId}</Badge>
-            </p>
+        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 sm:p-8">
+          <div className="flex items-center gap-6">
+            <div className="relative h-24 w-24 rounded-full overflow-hidden ring-4 ring-primary/20 shrink-0">
+               <Image
+                  src={student.avatarUrl || `https://picsum.photos/seed/${student.id}/200`}
+                  alt={`Avatar de ${student.name}`}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  data-ai-hint="person portrait"
+                />
+            </div>
+            <div className="space-y-1">
+              <CardTitle className="text-3xl font-bold font-headline">
+                {student.name}
+              </CardTitle>
+              <p className="text-muted-foreground">
+                <Badge variant="secondary">{student.studentId}</Badge>
+              </p>
+            </div>
           </div>
-           <div className="flex items-center gap-2">
+           <div className="flex items-center gap-2 self-start sm:self-center">
              <Button asChild>
               <Link href={`/students/${student.id}/notes/new`} className="gap-2">
                 <PlusCircle className="h-4 w-4" />

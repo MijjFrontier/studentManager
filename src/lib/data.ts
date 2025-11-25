@@ -1,5 +1,7 @@
 
+
 import type { Student, Note, Teacher } from './types';
+import { PlaceHolderImages } from './placeholder-images';
 
 // To persist data across hot reloads in development
 const globalForStudents = global as unknown as { students?: Student[] };
@@ -27,9 +29,9 @@ const simulateLatency = (ms: number = 500) =>
 
 // --- Student Data ---
 
-export async function getStudents(options: { query?: string; page?: number } = {}) {
+export async function getStudents(options: { query?: string; page?: number, level?: string, grade?: string, section?: string } = {}) {
   await simulateLatency();
-  const { query, page = 1 } = options;
+  const { query, page = 1, level, grade, section } = options;
 
   let filteredStudents = globalForStudents.students || [];
 
@@ -43,10 +45,22 @@ export async function getStudents(options: { query?: string; page?: number } = {
     );
   }
 
-  const startIndex = (page - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
+  if (level && grade && section) {
+    filteredStudents = filteredStudents.filter(
+      (student) =>
+        student.level === level &&
+        student.grade === grade &&
+        student.section === section
+    );
+  }
 
-  return filteredStudents.slice(startIndex, endIndex);
+  if (page) {
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return filteredStudents.slice(startIndex, endIndex);
+  }
+
+  return filteredStudents;
 }
 
 export async function getTotalStudentPages(query?: string) {
@@ -83,12 +97,14 @@ export async function addStudent(studentData: Omit<Student, 'id' | 'studentId'>)
     }
 
     const newId = crypto.randomUUID();
-    const newStudentId = `S${1000 + globalForStudents.students.length + 1}`;
+    const studentCount = globalForStudents.students.length;
+    const newStudentId = `S${1000 + studentCount + 1}`;
     
     const newStudent: Student = {
         ...studentData,
         id: newId,
         studentId: newStudentId,
+        avatarUrl: PlaceHolderImages[studentCount % PlaceHolderImages.length].imageUrl,
     };
     globalForStudents.students.unshift(newStudent); // Add to the beginning of the array
     return newStudent;

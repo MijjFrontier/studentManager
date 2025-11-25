@@ -1,6 +1,6 @@
 'use client';
 
-import type { Student, Course } from '@/lib/types';
+import type { Student, Course, Teacher } from '@/lib/types';
 import { useActionState, useTransition } from 'react';
 import { createNote, type NoteState } from '@/lib/actions';
 import { Input } from '@/components/ui/input';
@@ -22,12 +22,16 @@ import { useFormStatus } from 'react-dom';
 export function NoteForm({
     student,
     courses,
+    teacher,
 }: {
     student: Student;
     courses: Course[];
+    teacher?: Teacher | null; // teacher is optional
 }) {
     const initialState: NoteState = { message: null, errors: {} };
     const [state, dispatch] = useActionState(createNote, initialState);
+
+    const availableCourses = teacher ? courses.filter(c => teacher.courses.includes(c.name)) : courses;
 
     return (
         <form action={dispatch}>
@@ -47,7 +51,7 @@ export function NoteForm({
                                 <SelectValue placeholder="Selecciona una materia" />
                             </SelectTrigger>
                             <SelectContent>
-                                {courses.map(course => (
+                                {availableCourses.map(course => (
                                     <SelectItem key={course.id} value={course.name}>
                                         {course.name}
                                     </SelectItem>

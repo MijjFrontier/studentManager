@@ -61,7 +61,6 @@ export default function LoginPage() {
     }
     const [type, id] = selectedUser.split('-');
     
-    // For now, we are not validating the password, just redirecting
     const user = users.find(u => u.id === id && u.type === type);
     
     if (!user) {
@@ -75,8 +74,7 @@ export default function LoginPage() {
     if (type === 'student') {
       router.push(`/students/${id}`);
     } else if (type === 'teacher') {
-      // TODO: Implement teacher dashboard
-      alert('La vista de profesor aún no está implementada.');
+      router.push(`/teachers/${id}`);
     }
   };
 
@@ -126,19 +124,30 @@ export default function LoginPage() {
             <div className="flex items-center">
               <Separator className="flex-1" />
               <span className="px-4 text-xs text-muted-foreground uppercase">
-                O inicia sesión con tu email
+                O inicia sesión como usuario
               </span>
               <Separator className="flex-1" />
             </div>
 
             <form onSubmit={handleUserLogin} className="space-y-4">
-               <div className="space-y-2 text-left">
-                <Label htmlFor="email">Correo Electrónico</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="tu@correo.com"
-                />
+              <div className="space-y-2 text-left">
+                <Label htmlFor="user">Usuario (Profesor o Estudiante)</Label>
+                 <Select onValueChange={setSelectedUser} value={selectedUser} disabled={loading || users.length === 0}>
+                  <SelectTrigger id="user">
+                    <SelectValue placeholder={loading ? "Cargando usuarios..." : "Selecciona tu usuario"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {users.length > 0 ? (
+                        users.map(user => (
+                            <SelectItem key={`${user.type}-${user.id}`} value={`${user.type}-${user.id}`}>
+                                {user.name} ({user.type === 'teacher' ? 'Profesor' : 'Estudiante'})
+                            </SelectItem>
+                        ))
+                    ) : (
+                        <SelectItem value="no-users" disabled>No hay usuarios registrados</SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2 text-left">
@@ -149,7 +158,7 @@ export default function LoginPage() {
                   placeholder="••••••••"
                 />
               </div>
-              <Button type="submit" className="w-full" >
+              <Button type="submit" className="w-full" disabled={!selectedUser}>
                 <LogIn className="mr-2 h-4 w-4" />
                 Ingresar
               </Button>
