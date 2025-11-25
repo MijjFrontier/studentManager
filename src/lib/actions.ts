@@ -323,3 +323,5 @@ export async function deleteTeacher(id: string) {
     return { message: 'Error de base de datos: No se pudo eliminar el profesor.' };
   }
 }
+
+    
