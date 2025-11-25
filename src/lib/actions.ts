@@ -28,16 +28,16 @@ const StudentFormSchema = z.object({
   confirmPassword: z.string().optional(),
 });
 
-const CreateStudentSchema = StudentFormSchema.refine(
+const CreateStudentSchema = StudentFormSchema.extend({
+  password: z.string().min(6, { message: 'La contraseña debe tener al menos 6 caracteres.' }),
+  confirmPassword: z.string().min(6, { message: 'La confirmación de contraseña debe tener al menos 6 caracteres.' }),
+}).refine(
   (data) => data.password === data.confirmPassword,
   {
     message: 'Las contraseñas no coinciden.',
     path: ['confirmPassword'],
   }
-).refine((data) => !data.password || data.password.length >= 6, {
-  message: 'La contraseña debe tener al menos 6 caracteres.',
-  path: ['password'],
-});
+);
 
 
 export type State = {
@@ -66,14 +66,8 @@ export type State = {
 
 export async function createStudent(prevState: State, formData: FormData): Promise<State> {
   const rawFormData = Object.fromEntries(formData.entries());
-  
-  // Special validation for create
-  const CreateStudentWithPassword = CreateStudentSchema.refine((data) => data.password && data.password.length >= 6, {
-      message: 'La contraseña debe tener al menos 6 caracteres.',
-      path: ['password'],
-  });
 
-  const validatedFields = CreateStudentWithPassword.safeParse(rawFormData);
+  const validatedFields = CreateStudentSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
     return {
@@ -199,16 +193,16 @@ const TeacherFormSchema = z.object({
   confirmPassword: z.string().optional(),
 });
 
-const CreateTeacherSchema = TeacherFormSchema.refine(
+const CreateTeacherSchema = TeacherFormSchema.extend({
+  password: z.string().min(6, { message: 'La contraseña debe tener al menos 6 caracteres.' }),
+  confirmPassword: z.string().min(6, { message: 'La confirmación de contraseña debe tener al menos 6 caracteres.' }),
+}).refine(
   (data) => data.password === data.confirmPassword,
   {
     message: 'Las contraseñas no coinciden.',
     path: ['confirmPassword'],
   }
-).refine((data) => !data.password || data.password.length >= 6, {
-  message: 'La contraseña debe tener al menos 6 caracteres.',
-  path: ['password'],
-});
+);
 
 
 export type TeacherState = {
@@ -248,12 +242,7 @@ export async function createTeacher(prevState: TeacherState, formData: FormData)
     confirmPassword: formData.get('confirmPassword'),
   };
   
-  const CreateTeacherWithPassword = CreateTeacherSchema.refine((data) => data.password && data.password.length >= 6, {
-      message: 'La contraseña debe tener al menos 6 caracteres.',
-      path: ['password'],
-  });
-
-  const validatedFields = CreateTeacherWithPassword.safeParse(rawFormData);
+  const validatedFields = CreateTeacherSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
     return {
