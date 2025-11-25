@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Shield, LogIn, Loader2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { Teacher, Student } from '@/lib/types';
 import { getAllUsers } from '@/lib/data';
 import { AdminLoginForm } from '@/components/admin-login-form';
@@ -33,48 +33,52 @@ type User = (Teacher | Student) & { type: 'teacher' | 'student' };
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isAdminDialogOpen, setIsAdminDialogOpen] = useState(false);
 
-  useEffect(() => {
-    async function fetchUsers() {
-      setLoading(true);
-      const allUsers = await getAllUsers();
-      setUsers(allUsers);
-      setLoading(false);
-    }
-    fetchUsers();
-  }, []);
-
-  const handleUserLogin = (e: React.FormEvent) => {
+  const handleUserLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+
     if (!email || !password) {
       toast({
         variant: 'destructive',
         title: 'Campos incompletos',
         description: 'Por favor, introduce tu correo y contraseña.',
       });
+      setLoading(false);
       return;
     }
 
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    try {
+      const allUsers = await getAllUsers();
+      const user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
 
-    if (!user || user.password !== password) {
-      toast({
+      if (!user || user.password !== password) {
+        toast({
+          variant: 'destructive',
+          title: 'Error de autenticación',
+          description: 'El correo electrónico o la contraseña son incorrectos.',
+        });
+        setLoading(false);
+        return;
+      }
+
+      if (user.type === 'student') {
+        router.push(`/students/${user.id}`);
+      } else if (user.type === 'teacher') {
+        router.push(`/teachers/${user.id}`);
+      }
+    } catch (error) {
+       toast({
         variant: 'destructive',
-        title: 'Error de autenticación',
-        description: 'El correo electrónico o la contraseña son incorrectos.',
+        title: 'Error del sistema',
+        description: 'No se pudo contactar con el servidor. Inténtalo de nuevo.',
       });
-      return;
-    }
-
-    if (user.type === 'student') {
-      router.push(`/students/${user.id}`);
-    } else if (user.type === 'teacher') {
-      router.push(`/teachers/${user.id}`);
+    } finally {
+        setLoading(false);
     }
   };
 
@@ -157,7 +161,7 @@ export default function LoginPage() {
                 {loading ? (
                     <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Cargando...
+                        Verificando...
                     </>
                 ) : (
                     <>
