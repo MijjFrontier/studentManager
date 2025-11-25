@@ -16,7 +16,7 @@ import {
 
 // --- Student Actions ---
 
-const StudentFormSchema = z.object({
+const BaseStudentFormSchema = z.object({
   name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
   email: z.string().email({ message: 'Por favor, introduce una dirección de correo electrónico válida.' }),
   phone: z.string().regex(/^\d{9}$/, { message: 'El número de teléfono debe tener 9 dígitos.' }),
@@ -24,11 +24,9 @@ const StudentFormSchema = z.object({
   level: z.string({ required_error: 'El nivel es requerido.' }).min(1, { message: 'El nivel es requerido.' }),
   grade: z.string({ required_error: 'El grado es requerido.' }).min(1, { message: 'El grado es requerido.' }),
   section: z.string({ required_error: 'La sección es requerida.' }).min(1, { message: 'La sección es requerida.' }),
-  password: z.string().optional(),
-  confirmPassword: z.string().optional(),
 });
 
-const CreateStudentSchema = StudentFormSchema.extend({
+const CreateStudentSchema = BaseStudentFormSchema.extend({
   password: z.string().min(6, { message: 'La contraseña debe tener al menos 6 caracteres.' }),
   confirmPassword: z.string().min(6, { message: 'La confirmación de contraseña debe tener al menos 6 caracteres.' }),
 }).refine(
@@ -39,6 +37,7 @@ const CreateStudentSchema = StudentFormSchema.extend({
   }
 );
 
+const UpdateStudentSchema = BaseStudentFormSchema;
 
 export type State = {
   errors?: {
@@ -82,6 +81,7 @@ export async function createStudent(prevState: State, formData: FormData): Promi
   try {
     await addStudent({
         ...dataToSave,
+        password: dataToSave.password,
         address: dataToSave.address || '',
     });
   } catch (error) {
@@ -95,8 +95,6 @@ export async function createStudent(prevState: State, formData: FormData): Promi
 
 export async function updateStudent(id: string, prevState: State, formData: FormData): Promise<State> {
   const rawFormData = Object.fromEntries(formData.entries());
-  // For updates, we don't validate password fields
-  const UpdateStudentSchema = StudentFormSchema.omit({ password: true, confirmPassword: true });
   const validatedFields = UpdateStudentSchema.safeParse(rawFormData);
 
    if (!validatedFields.success) {
@@ -180,7 +178,7 @@ export async function createNote(prevState: NoteState, formData: FormData) {
 
 
 // --- Teacher Actions ---
-const TeacherFormSchema = z.object({
+const BaseTeacherFormSchema = z.object({
   name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
   email: z.string().email({ message: 'Por favor, introduce una dirección de correo electrónico válida.' }),
   phone: z.string().regex(/^\d{9}$/, { message: 'El número de teléfono debe tener 9 dígitos.' }),
@@ -189,11 +187,9 @@ const TeacherFormSchema = z.object({
   level: z.string({ required_error: 'El nivel es requerido.' }).min(1, { message: 'El nivel es requerido.' }),
   grade: z.string({ required_error: 'El grado es requerido.' }).min(1, { message: 'El grado es requerido.' }),
   section: z.string({ required_error: 'La sección es requerida.' }).min(1, { message: 'La sección es requerida.' }),
-  password: z.string().optional(),
-  confirmPassword: z.string().optional(),
 });
 
-const CreateTeacherSchema = TeacherFormSchema.extend({
+const CreateTeacherSchema = BaseTeacherFormSchema.extend({
   password: z.string().min(6, { message: 'La contraseña debe tener al menos 6 caracteres.' }),
   confirmPassword: z.string().min(6, { message: 'La confirmación de contraseña debe tener al menos 6 caracteres.' }),
 }).refine(
@@ -203,6 +199,8 @@ const CreateTeacherSchema = TeacherFormSchema.extend({
     path: ['confirmPassword'],
   }
 );
+
+const UpdateTeacherSchema = BaseTeacherFormSchema;
 
 
 export type TeacherState = {
@@ -276,8 +274,7 @@ export async function updateTeacher(id: string, prevState: TeacherState, formDat
     grade: formData.get('grade'),
     section: formData.get('section'),
   };
-  // For updates, we don't validate password fields
-  const UpdateTeacherSchema = TeacherFormSchema.omit({ password: true, confirmPassword: true });
+
   const validatedFields = UpdateTeacherSchema.safeParse(rawFormData);
 
    if (!validatedFields.success) {
