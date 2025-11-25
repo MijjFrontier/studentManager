@@ -1,3 +1,4 @@
+
 'use server';
 
 import { z } from 'zod';
@@ -21,7 +22,21 @@ const StudentFormSchema = z.object({
   level: z.string({ required_error: 'El nivel es requerido.' }).min(1, { message: 'El nivel es requerido.' }),
   grade: z.string({ required_error: 'El grado es requerido.' }).min(1, { message: 'El grado es requerido.' }),
   section: z.string({ required_error: 'La sección es requerida.' }).min(1, { message: 'La sección es requerida.' }),
+  password: z.string().optional(),
+  confirmPassword: z.string().optional(),
 });
+
+const CreateStudentSchema = StudentFormSchema.refine(
+  (data) => data.password === data.confirmPassword,
+  {
+    message: 'Las contraseñas no coinciden.',
+    path: ['confirmPassword'],
+  }
+).refine((data) => (data.password?.length ?? 0) >= 6, {
+  message: 'La contraseña debe tener al menos 6 caracteres.',
+  path: ['password'],
+});
+
 
 export type State = {
   errors?: {
@@ -32,6 +47,8 @@ export type State = {
     level?: string[];
     grade?: string[];
     section?: string[];
+    password?: string[];
+    confirmPassword?: string[];
   };
   message?: string | null;
   data?: {
@@ -47,7 +64,7 @@ export type State = {
 
 export async function createStudent(prevState: State, formData: FormData): Promise<State> {
   const rawFormData = Object.fromEntries(formData.entries());
-  const validatedFields = StudentFormSchema.safeParse(rawFormData);
+  const validatedFields = CreateStudentSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
     return {
@@ -57,24 +74,27 @@ export async function createStudent(prevState: State, formData: FormData): Promi
     };
   }
   
-  const dataToSave = {
-    ...validatedFields.data,
-    address: validatedFields.data.address || '',
-  };
+  const { confirmPassword, ...dataToSave } = validatedFields.data;
 
   try {
-    await addStudent(dataToSave);
+    await addStudent({
+        ...dataToSave,
+        address: dataToSave.address || '',
+    });
   } catch (error) {
     return { message: 'Error de base de datos: No se pudo crear el estudiante.', data: rawFormData as State['data'] };
   }
 
   revalidatePath('/');
-  redirect(`/?success_message=${encodeURIComponent('Estudiante creado con éxito.')}`);
+  revalidatePath('/students');
+  redirect(`/students?success_message=${encodeURIComponent('Estudiante creado con éxito.')}`);
 }
 
 export async function updateStudent(id: string, prevState: State, formData: FormData): Promise<State> {
   const rawFormData = Object.fromEntries(formData.entries());
-  const validatedFields = StudentFormSchema.safeParse(rawFormData);
+  // For updates, we don't validate password fields
+  const UpdateStudentSchema = StudentFormSchema.omit({ password: true, confirmPassword: true });
+  const validatedFields = UpdateStudentSchema.safeParse(rawFormData);
 
    if (!validatedFields.success) {
     return {
@@ -105,7 +125,8 @@ export async function deleteStudent(id: string) {
   try {
     await deleteStudentById(id);
     revalidatePath('/');
-    redirect(`/?success_message=${encodeURIComponent('Estudiante eliminado con éxito.')}`);
+    revalidatePath('/students');
+    redirect(`/students?success_message=${encodeURIComponent('Estudiante eliminado con éxito.')}`);
   } catch (e) {
     return { message: 'Error de base de datos: No se pudo eliminar el estudiante.' };
   }
@@ -161,7 +182,21 @@ const TeacherFormSchema = z.object({
   email: z.string().email({ message: 'Por favor, introduce una dirección de correo electrónico válida.' }),
   phone: z.string().regex(/^\d{9}$/, { message: 'El número de teléfono debe tener 9 dígitos.' }),
   courses: z.array(z.string()).min(1, { message: 'Debes seleccionar al menos una materia.' }),
+  password: z.string().optional(),
+  confirmPassword: z.string().optional(),
 });
+
+const CreateTeacherSchema = TeacherFormSchema.refine(
+  (data) => data.password === data.confirmPassword,
+  {
+    message: 'Las contraseñas no coinciden.',
+    path: ['confirmPassword'],
+  }
+).refine((data) => (data.password?.length ?? 0) >= 6, {
+  message: 'La contraseña debe tener al menos 6 caracteres.',
+  path: ['password'],
+});
+
 
 export type TeacherState = {
   errors?: {
@@ -169,6 +204,8 @@ export type TeacherState = {
     email?: string[];
     phone?: string[];
     courses?: string[];
+    password?: string[];
+    confirmPassword?: string[];
   };
   message?: string | null;
   data?: {
@@ -185,9 +222,11 @@ export async function createTeacher(prevState: TeacherState, formData: FormData)
     email: formData.get('email'),
     phone: formData.get('phone'),
     courses: formData.getAll('courses'),
+    password: formData.get('password'),
+    confirmPassword: formData.get('confirmPassword'),
   };
   
-  const validatedFields = TeacherFormSchema.safeParse(rawFormData);
+  const validatedFields = CreateTeacherSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
     return {
@@ -197,12 +236,15 @@ export async function createTeacher(prevState: TeacherState, formData: FormData)
     };
   }
 
+  const { confirmPassword, ...dataToSave } = validatedFields.data;
+
   try {
-    await addTeacher(validatedFields.data);
+    await addTeacher(dataToSave);
   } catch (error) {
     return { message: 'Error de base de datos: No se pudo crear el profesor.', data: rawFormData as TeacherState['data'] };
   }
 
   revalidatePath('/teachers');
+  revalidatePath('/');
   redirect(`/teachers?success_message=${encodeURIComponent('Profesor creado con éxito.')}`);
 }

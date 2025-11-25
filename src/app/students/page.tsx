@@ -1,3 +1,4 @@
+
 import { getTotalStudentPages } from '@/lib/data';
 import StudentTable from '@/components/student-table';
 import { Search } from '@/components/search';

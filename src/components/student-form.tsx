@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Student, Level, Grade, Section } from '@/lib/types';
@@ -110,6 +111,46 @@ export function StudentForm({
               </div>
             </div>
           </div>
+          {!student && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="password">Contraseña</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Mínimo 6 caracteres"
+                  aria-describedby="password-error"
+                />
+                <div id="password-error" aria-live="polite" aria-atomic="true">
+                  {state.errors?.password &&
+                    state.errors.password.map((error: string) => (
+                      <p className="mt-2 text-sm text-destructive" key={error}>
+                        {error}
+                      </p>
+                    ))}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  placeholder="Vuelve a escribir la contraseña"
+                  aria-describedby="confirmPassword-error"
+                />
+                <div id="confirmPassword-error" aria-live="polite" aria-atomic="true">
+                  {state.errors?.confirmPassword &&
+                    state.errors.confirmPassword.map((error: string) => (
+                      <p className="mt-2 text-sm text-destructive" key={error}>
+                        {error}
+                      </p>
+                    ))}
+                </div>
+              </div>
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="phone">Número de Teléfono</Label>
             <Input
@@ -237,7 +278,7 @@ export function StudentForm({
         </CardContent>
         <CardFooter className="flex justify-end gap-4">
           <Button variant="outline" asChild>
-            <Link href={student ? `/students/${student.id}` : '/'}>Cancelar</Link>
+            <Link href={student ? `/students/${student.id}` : '/students'}>Cancelar</Link>
           </Button>
           <SubmitButton text={student ? 'Actualizar Estudiante' : 'Crear Estudiante'} />
         </CardFooter>

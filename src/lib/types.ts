@@ -1,3 +1,4 @@
+
 export type Student = {
   id: string; // uuid
   studentId: string; // human-readable id
@@ -8,6 +9,7 @@ export type Student = {
   level: string;
   grade: string;
   section: string;
+  password?: string;
 };
 
 export type Teacher = {
@@ -17,6 +19,7 @@ export type Teacher = {
   email: string;
   phone: string;
   courses: string[];
+  password?: string;
 };
 
 export type Level = {

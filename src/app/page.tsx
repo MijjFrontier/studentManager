@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -59,6 +60,17 @@ export default function LoginPage() {
       return;
     }
     const [type, id] = selectedUser.split('-');
+    
+    // For now, we are not validating the password, just redirecting
+    const user = users.find(u => u.id === id && u.type === type);
+    
+    if (!user) {
+        alert('Usuario no encontrado.');
+        return;
+    }
+
+    // TODO: Add actual password validation here later.
+    // For now, we simulate login.
 
     if (type === 'student') {
       router.push(`/students/${id}`);
@@ -114,57 +126,30 @@ export default function LoginPage() {
             <div className="flex items-center">
               <Separator className="flex-1" />
               <span className="px-4 text-xs text-muted-foreground uppercase">
-                O inicia sesión
+                O inicia sesión con tu email
               </span>
               <Separator className="flex-1" />
             </div>
 
             <form onSubmit={handleUserLogin} className="space-y-4">
-              <div className="space-y-2 text-left">
-                <Label htmlFor="user">Usuario (Profesor o Estudiante)</Label>
-                <Select
-                  onValueChange={setSelectedUser}
-                  value={selectedUser}
-                  disabled={loading || users.length === 0}
-                >
-                  <SelectTrigger id="user">
-                    <SelectValue
-                      placeholder={
-                        loading
-                          ? 'Cargando usuarios...'
-                          : users.length === 0
-                            ? 'No hay usuarios registrados'
-                            : 'Selecciona tu usuario'
-                      }
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {users.map((user) => (
-                      <SelectItem
-                        key={`${user.type}-${user.id}`}
-                        value={`${user.type}-${user.id}`}
-                      >
-                        {user.name} (
-                        {user.type === 'teacher' ? 'Profesor' : 'Estudiante'})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+               <div className="space-y-2 text-left">
+                <Label htmlFor="email">Correo Electrónico</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="tu@correo.com"
+                />
               </div>
 
               <div className="space-y-2 text-left">
-                <Label htmlFor="pin">PIN o Contraseña</Label>
+                <Label htmlFor="password">Contraseña</Label>
                 <Input
-                  id="pin"
+                  id="password"
                   type="password"
-                  placeholder="****"
-                  defaultValue="1234"
+                  placeholder="••••••••"
                 />
-                <p className="text-xs text-muted-foreground pt-1">
-                  Para esta demo, cualquier contraseña es válida.
-                </p>
               </div>
-              <Button type="submit" className="w-full" disabled={!selectedUser}>
+              <Button type="submit" className="w-full" >
                 <LogIn className="mr-2 h-4 w-4" />
                 Ingresar
               </Button>

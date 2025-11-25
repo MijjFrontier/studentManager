@@ -1,3 +1,4 @@
+
 import type { Student, Note, Teacher } from './types';
 
 // To persist data across hot reloads in development
@@ -93,7 +94,7 @@ export async function addStudent(studentData: Omit<Student, 'id' | 'studentId'>)
     return newStudent;
 }
 
-export async function updateStudent(id: string, updates: Partial<Omit<Student, 'id' | 'studentId'>>) {
+export async function updateStudent(id: string, updates: Partial<Omit<Student, 'id' | 'studentId' | 'password'>>) {
     await simulateLatency();
     
     if (!globalForStudents.students) {
