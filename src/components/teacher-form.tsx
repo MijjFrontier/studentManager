@@ -3,7 +3,7 @@
 
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { createTeacher, type TeacherState } from '@/lib/actions';
+import { createTeacher, updateTeacher, type TeacherState } from '@/lib/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card';
@@ -23,7 +23,7 @@ export function TeacherForm({
   courses: Course[],
 }) {
   const initialState: TeacherState = { message: null, errors: {} };
-  const action = createTeacher; // For now, only create
+  const action = teacher ? updateTeacher.bind(null, teacher.id) : createTeacher;
   const [state, dispatch] = useActionState(action, initialState);
 
   const formKey = teacher?.id || 'new';

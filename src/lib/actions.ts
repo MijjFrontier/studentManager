@@ -11,6 +11,7 @@ import {
   addNote,
   addTeacher,
   deleteTeacherById,
+  updateTeacherData,
 } from '@/lib/data';
 
 // --- Student Actions ---
@@ -261,6 +262,39 @@ export async function createTeacher(prevState: TeacherState, formData: FormData)
   revalidatePath('/teachers');
   revalidatePath('/');
   redirect(`/teachers?success_message=${encodeURIComponent('Profesor creado con éxito.')}`);
+}
+
+
+export async function updateTeacher(id: string, prevState: TeacherState, formData: FormData): Promise<TeacherState> {
+  const rawFormData = {
+    name: formData.get('name'),
+    email: formData.get('email'),
+    phone: formData.get('phone'),
+    courses: formData.getAll('courses'),
+  };
+  // For updates, we don't validate password fields
+  const UpdateTeacherSchema = TeacherFormSchema.omit({ password: true, confirmPassword: true });
+  const validatedFields = UpdateTeacherSchema.safeParse(rawFormData);
+
+   if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Error al actualizar el profesor. Por favor, comprueba los campos.',
+      data: rawFormData as TeacherState['data'],
+    };
+  }
+  
+  const dataToSave = validatedFields.data;
+
+  try {
+    await updateTeacherData(id, dataToSave);
+  } catch (e) {
+    return { message: 'Error de base de datos: No se pudo actualizar el profesor.', data: rawFormData as TeacherState['data'] };
+  }
+
+  revalidatePath('/');
+  revalidatePath('/teachers');
+  redirect(`/teachers?success_message=${encodeURIComponent('Profesor actualizado con éxito.')}`);
 }
 
 

@@ -116,10 +116,10 @@ export default async function TeacherTable({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem asChild>
-                        <button className="w-full text-left" disabled> {/* Disabled for now */}
+                        <Link href={`/teachers/${teacher.id}/edit`} className="flex items-center">
                           <Edit className="mr-2 h-4 w-4" />
                           <span>Editar</span>
-                        </button>
+                        </Link>
                       </DropdownMenuItem>
                       <DeleteAction id={teacher.id} />
                     </DropdownMenuContent>

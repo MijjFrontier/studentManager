@@ -205,6 +205,32 @@ export async function getTotalTeacherPages(query?: string) {
     return Math.ceil(filteredTeachers.length / ITEMS_PER_PAGE);
 }
 
+
+export async function getTeacherById(id: string) {
+    await simulateLatency();
+    const teacher = (globalForTeachers.teachers || []).find((t) => t.id === id);
+    if (!teacher) {
+        return null;
+    }
+    return teacher;
+}
+
+export async function updateTeacherData(id: string, updates: Partial<Omit<Teacher, 'id' | 'teacherId' | 'password'>>) {
+    await simulateLatency();
+    
+    if (!globalForTeachers.teachers) {
+        globalForTeachers.teachers = [];
+    }
+    
+    const teacherIndex = globalForTeachers.teachers.findIndex((t) => t.id === id);
+    if (teacherIndex === -1) {
+        throw new Error('Teacher not found');
+    }
+    globalForTeachers.teachers[teacherIndex] = { ...globalForTeachers.teachers[teacherIndex], ...updates };
+    return globalForTeachers.teachers[teacherIndex];
+}
+
+
 export async function deleteTeacherById(id: string) {
     await simulateLatency();
 
