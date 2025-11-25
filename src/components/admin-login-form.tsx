@@ -9,7 +9,7 @@ import { DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 
-const ADMIN_PASSWORD = 'superSecret123';
+const ADMIN_PASSWORD = '123';
 
 export function AdminLoginForm({ onSuccess }: { onSuccess: () => void }) {
   const [password, setPassword] = useState('');
