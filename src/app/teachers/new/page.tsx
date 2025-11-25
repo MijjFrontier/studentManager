@@ -1,7 +1,12 @@
+
 import { TeacherForm } from '@/components/teacher-form';
-import { getCourses } from '@/lib/select-data';
+import { getCourses, getLevels, getSections } from '@/lib/select-data';
 
 export default async function NewTeacherPage() {
-  const courses = await getCourses();
-  return <TeacherForm courses={courses} />;
+  const [courses, levels, sections] = await Promise.all([
+    getCourses(),
+    getLevels(),
+    getSections(),
+  ]);
+  return <TeacherForm courses={courses} levels={levels} sections={sections} />;
 }

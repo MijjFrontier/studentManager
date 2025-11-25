@@ -192,6 +192,9 @@ const TeacherFormSchema = z.object({
   phone: z.string().regex(/^\d{9}$/, { message: 'El número de teléfono debe tener 9 dígitos.' }),
   courses: z.preprocess((val) => (Array.isArray(val) ? val : [val].filter(Boolean)), 
     z.array(z.string()).min(1, { message: 'Debes seleccionar al menos una materia.' })),
+  level: z.string({ required_error: 'El nivel es requerido.' }).min(1, { message: 'El nivel es requerido.' }),
+  grade: z.string({ required_error: 'El grado es requerido.' }).min(1, { message: 'El grado es requerido.' }),
+  section: z.string({ required_error: 'La sección es requerida.' }).min(1, { message: 'La sección es requerida.' }),
   password: z.string().optional(),
   confirmPassword: z.string().optional(),
 });
@@ -214,6 +217,9 @@ export type TeacherState = {
     email?: string[];
     phone?: string[];
     courses?: string[];
+    level?: string[];
+    grade?: string[];
+    section?: string[];
     password?: string[];
     confirmPassword?: string[];
   };
@@ -223,6 +229,9 @@ export type TeacherState = {
     email: string;
     phone: string;
     courses: string[];
+    level: string;
+    grade: string;
+    section: string;
   }
 };
 
@@ -232,6 +241,9 @@ export async function createTeacher(prevState: TeacherState, formData: FormData)
     email: formData.get('email'),
     phone: formData.get('phone'),
     courses: formData.getAll('courses'),
+    level: formData.get('level'),
+    grade: formData.get('grade'),
+    section: formData.get('section'),
     password: formData.get('password'),
     confirmPassword: formData.get('confirmPassword'),
   };
@@ -271,6 +283,9 @@ export async function updateTeacher(id: string, prevState: TeacherState, formDat
     email: formData.get('email'),
     phone: formData.get('phone'),
     courses: formData.getAll('courses'),
+    level: formData.get('level'),
+    grade: formData.get('grade'),
+    section: formData.get('section'),
   };
   // For updates, we don't validate password fields
   const UpdateTeacherSchema = TeacherFormSchema.omit({ password: true, confirmPassword: true });

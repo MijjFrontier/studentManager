@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { createTeacher, updateTeacher, type TeacherState } from '@/lib/actions';
 import { Input } from '@/components/ui/input';
@@ -11,22 +11,57 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, Loader2 } from 'lucide-react';
-import type { Teacher, Course } from '@/lib/types';
+import type { Teacher, Course, Level, Grade, Section } from '@/lib/types';
 import { Checkbox } from './ui/checkbox';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { getGradesByLevel } from '@/lib/select-data';
 
 
 export function TeacherForm({ 
   teacher,
   courses,
+  levels,
+  sections,
 }: { 
   teacher?: Teacher | null,
   courses: Course[],
+  levels: Level[],
+  sections: Section[],
 }) {
   const initialState: TeacherState = { message: null, errors: {} };
   const action = teacher ? updateTeacher.bind(null, teacher.id) : createTeacher;
   const [state, dispatch] = useActionState(action, initialState);
 
   const formKey = teacher?.id || 'new';
+
+  const defaultLevel = teacher?.level || state.data?.level || '';
+  const defaultGrade = teacher?.grade || state.data?.grade || '';
+  
+  const [selectedLevel, setSelectedLevel] = useState(defaultLevel);
+  const [selectedGrade, setSelectedGrade] = useState(defaultGrade);
+  const [availableGrades, setAvailableGrades] = useState<Grade[]>([]);
+
+  useEffect(() => {
+    if (defaultLevel) {
+      setAvailableGrades(getGradesByLevel(defaultLevel));
+    }
+  }, [defaultLevel]);
+
+  const handleLevelChange = (levelName: string) => {
+    setSelectedLevel(levelName);
+    setSelectedGrade(''); // Reset grade when level changes
+    setAvailableGrades(getGradesByLevel(levelName));
+  };
+
+  const handleGradeChange = (gradeName: string) => {
+    setSelectedGrade(gradeName);
+  };
 
   return (
     <form action={dispatch} key={formKey}>
@@ -135,6 +170,87 @@ export function TeacherForm({
                     {error}
                   </p>
                 ))}
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="level">Nivel</Label>
+              <Select name="level" defaultValue={selectedLevel} onValueChange={handleLevelChange}>
+                <SelectTrigger id="level" aria-describedby="level-error">
+                  <SelectValue placeholder="Selecciona un nivel" />
+                </SelectTrigger>
+                <SelectContent>
+                  {levels.map(level => (
+                    <SelectItem key={level.id} value={level.name}>
+                      {level.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div id="level-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.level &&
+                  state.errors.level.map((error: string) => (
+                    <p className="mt-2 text-sm text-destructive" key={error}>
+                      {error}
+                    </p>
+                  ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="grade">Grado</Label>
+              <Select 
+                name="grade" 
+                value={selectedGrade}
+                onValueChange={handleGradeChange}
+                disabled={!selectedLevel}
+              >
+                <SelectTrigger id="grade" aria-describedby="grade-error">
+                  <SelectValue placeholder={!selectedLevel ? "Primero selecciona un nivel" : "Selecciona un grado"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableGrades.map(grade => (
+                    <SelectItem key={grade.id} value={grade.name}>
+                      {grade.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div id="grade-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.grade &&
+                  state.errors.grade.map((error: string) => (
+                    <p className="mt-2 text-sm text-destructive" key={error}>
+                      {error}
+                    </p>
+                  ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="section">Sección</Label>
+              <Select 
+                name="section" 
+                defaultValue={state.data?.section ?? teacher?.section} 
+                disabled={!selectedGrade}
+              >
+                <SelectTrigger id="section" aria-describedby="section-error">
+                  <SelectValue placeholder={!selectedGrade ? "Primero selecciona un grado" : "Selecciona una sección"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {sections.map(section => (
+                    <SelectItem key={section.id} value={section.name}>
+                      {section.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div id="section-error" aria-live="polite" aria-atomic="true">
+                {state.errors?.section &&
+                  state.errors.section.map((error: string) => (
+                    <p className="mt-2 text-sm text-destructive" key={error}>
+                      {error}
+                    </p>
+                  ))}
+              </div>
             </div>
           </div>
 
