@@ -246,7 +246,7 @@ export async function createTeacher(prevState: TeacherState, formData: FormData)
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Error al crear el profesor. Por favor, comprueba los campos.',
-      data: rawFormData as TeacherState['data'],
+      data: rawFormData as unknown as TeacherState['data'],
     };
   }
 
@@ -255,7 +255,7 @@ export async function createTeacher(prevState: TeacherState, formData: FormData)
   try {
     await addTeacher(dataToSave);
   } catch (error) {
-    return { message: 'Error de base de datos: No se pudo crear el profesor.', data: rawFormData as TeacherState['data'] };
+    return { message: 'Error de base de datos: No se pudo crear el profesor.', data: rawFormData as unknown as TeacherState['data'] };
   }
 
   revalidatePath('/teachers');
@@ -281,7 +281,7 @@ export async function updateTeacher(id: string, prevState: TeacherState, formDat
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Error al actualizar el profesor. Por favor, comprueba los campos.',
-      data: rawFormData as TeacherState['data'],
+      data: rawFormData as unknown as TeacherState['data'],
     };
   }
   
@@ -290,7 +290,7 @@ export async function updateTeacher(id: string, prevState: TeacherState, formDat
   try {
     await updateTeacherData(id, dataToSave);
   } catch (e) {
-    return { message: 'Error de base de datos: No se pudo actualizar el profesor.', data: rawFormData as TeacherState['data'] };
+    return { message: 'Error de base de datos: No se pudo actualizar el profesor.', data: rawFormData as unknown as TeacherState['data'] };
   }
 
   revalidatePath('/');
@@ -309,5 +309,3 @@ export async function deleteTeacher(id: string) {
     return { message: 'Error de base de datos: No se pudo eliminar el profesor.' };
   }
 }
-
-    
