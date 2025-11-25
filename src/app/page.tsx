@@ -11,13 +11,6 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Shield, LogIn } from 'lucide-react';
@@ -33,14 +26,17 @@ import {
   DialogDescription,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 
 type User = (Teacher | Student) & { type: 'teacher' | 'student' };
 
 export default function LoginPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedUser, setSelectedUser] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isAdminDialogOpen, setIsAdminDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -55,26 +51,33 @@ export default function LoginPage() {
 
   const handleUserLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedUser) {
-      alert('Por favor, selecciona un usuario.');
+    if (!email || !password) {
+      toast({
+        variant: 'destructive',
+        title: 'Campos incompletos',
+        description: 'Por favor, introduce tu correo y contraseña.',
+      });
       return;
     }
-    const [type, id] = selectedUser.split('-');
-    
-    const user = users.find(u => u.id === id && u.type === type);
-    
+
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
     if (!user) {
-        alert('Usuario no encontrado.');
-        return;
+      toast({
+        variant: 'destructive',
+        title: 'Error de autenticación',
+        description: 'El correo electrónico o la contraseña son incorrectos.',
+      });
+      return;
     }
-
+    
     // TODO: Add actual password validation here later.
-    // For now, we simulate login.
+    // For now, we just check if the user exists and a password was entered.
 
-    if (type === 'student') {
-      router.push(`/students/${id}`);
-    } else if (type === 'teacher') {
-      router.push(`/teachers/${id}`);
+    if (user.type === 'student') {
+      router.push(`/students/${user.id}`);
+    } else if (user.type === 'teacher') {
+      router.push(`/teachers/${user.id}`);
     }
   };
 
@@ -131,23 +134,15 @@ export default function LoginPage() {
 
             <form onSubmit={handleUserLogin} className="space-y-4">
               <div className="space-y-2 text-left">
-                <Label htmlFor="user">Usuario (Profesor o Estudiante)</Label>
-                 <Select onValueChange={setSelectedUser} value={selectedUser} disabled={loading || users.length === 0}>
-                  <SelectTrigger id="user">
-                    <SelectValue placeholder={loading ? "Cargando usuarios..." : "Selecciona tu usuario"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {users.length > 0 ? (
-                        users.map(user => (
-                            <SelectItem key={`${user.type}-${user.id}`} value={`${user.type}-${user.id}`}>
-                                {user.name} ({user.type === 'teacher' ? 'Profesor' : 'Estudiante'})
-                            </SelectItem>
-                        ))
-                    ) : (
-                        <SelectItem value="no-users" disabled>No hay usuarios registrados</SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="email">Correo Electrónico</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="tu@correo.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
+                />
               </div>
 
               <div className="space-y-2 text-left">
@@ -156,9 +151,12 @@ export default function LoginPage() {
                   id="password"
                   type="password"
                   placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={!selectedUser}>
+              <Button type="submit" className="w-full" disabled={loading || !email || !password}>
                 <LogIn className="mr-2 h-4 w-4" />
                 Ingresar
               </Button>
