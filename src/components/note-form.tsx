@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Student, Course, Teacher } from '@/lib/types';
@@ -31,7 +32,8 @@ export function NoteForm({
     const initialState: NoteState = { message: null, errors: {} };
     const [state, dispatch] = useActionState(createNote, initialState);
 
-    const availableCourses = teacher ? courses.filter(c => teacher.courses.includes(c.name)) : courses;
+    // Use the passed courses directly, which are pre-filtered on the server if a teacher is present.
+    const availableCourses = courses;
 
     return (
         <form action={dispatch}>
@@ -41,6 +43,7 @@ export function NoteForm({
                     <CardTitle>Registrar Nota para {student.name}</CardTitle>
                     <CardDescription>
                         Selecciona la materia e introduce la calificación.
+                        {teacher && ` (Profesor: ${teacher.name})`}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -97,7 +100,7 @@ export function NoteForm({
                 </CardContent>
                 <CardFooter className="flex justify-end gap-4">
                     <Button variant="outline" asChild>
-                        <Link href={`/students/${student.id}`}>Cancelar</Link>
+                        <Link href={teacher ? `/teachers/${teacher.id}` : `/students/${student.id}`}>Cancelar</Link>
                     </Button>
                     <SubmitButton text="Guardar Nota" />
                 </CardFooter>

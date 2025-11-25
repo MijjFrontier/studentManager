@@ -1,3 +1,4 @@
+
 'use server';
 
 import { getStudentById, getTeacherById } from '@/lib/data';
@@ -22,5 +23,8 @@ export default async function GradeStudentPage({
     notFound();
   }
 
-  return <NoteForm student={student} courses={allCourses} teacher={teacher} />;
+  // Filter courses to only those the teacher teaches.
+  const teacherCourses = allCourses.filter(course => teacher.courses.includes(course.name));
+
+  return <NoteForm student={student} courses={teacherCourses} teacher={teacher} />;
 }
