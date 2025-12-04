@@ -30,10 +30,12 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased h-full" suppressHydrationWarning>
             {children}
-        <Toaster />
-        <Suspense fallback={null}>
-          <ToasterHandler />
-        </Suspense>
+        <div suppressHydrationWarning>
+          <Toaster />
+          <Suspense fallback={null}>
+            <ToasterHandler />
+          </Suspense>
+        </div>
       </body>
     </html>
   );
